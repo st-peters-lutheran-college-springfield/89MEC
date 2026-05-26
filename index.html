@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FPV Spy Car — Class Notebook | Mechatronics Yr 8 & 9</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:    #0F2A4A;
+    --blue:    #1565C0;
+    --sky:     #2196F3;
+    --teal:    #00897B;
+    --amber:   #F59E0B;
+    --red:     #C62828;
+    --mint:    #E8F5E9;
+    --ice:     #E3F2FD;
+    --cream:   #FFFDE7;
+    --lavender:#EDE7F6;
+    --white:   #FFFFFF;
+    --off:     #F8FAFC;
+    --border:  #DDE3EA;
+    --text:    #1A2332;
+    --muted:   #64748B;
+    --mono:    'Space Mono', monospace;
+    --sans:    'DM Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--sans);
+    background: #0D1B2A;
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── SIDEBAR ─────────────────────────────────────── */
+  #app { display: flex; min-height: 100vh; }
+
+  #sidebar {
+    width: 260px; min-height: 100vh;
+    background: var(--navy);
+    display: flex; flex-direction: column;
+    position: fixed; top: 0; left: 0; bottom: 0;
+    z-index: 100; overflow-y: auto;
+  }
+
+  .nb-brand {
+    padding: 20px 18px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .nb-brand .icon { font-size: 22px; margin-bottom: 4px; }
+  .nb-brand h2 { color: #fff; font-size: 13px; font-weight: 700; letter-spacing: 0.05em; line-height: 1.3; }
+  .nb-brand p  { color: rgba(255,255,255,0.5); font-size: 11px; margin-top: 2px; }
+
+  .section-group { padding: 10px 0; }
+  .section-label {
+    font-family: var(--mono); font-size: 9px; font-weight: 700;
+    letter-spacing: 0.12em; color: rgba(255,255,255,0.35);
+    padding: 6px 18px 4px; text-transform: uppercase;
+  }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 18px; cursor: pointer;
+    color: rgba(255,255,255,0.65); font-size: 13px;
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.07); color: #fff; }
+  .nav-item.active {
+    background: rgba(33,150,243,0.18);
+    border-left-color: var(--sky);
+    color: #fff;
+  }
+  .nav-item .dot {
+    width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+  }
+  .nav-item .badge {
+    margin-left: auto; background: var(--sky);
+    color: #fff; font-size: 10px; font-family: var(--mono);
+    padding: 1px 6px; border-radius: 9px;
+  }
+
+  /* ── MAIN ────────────────────────────────────────── */
+  #main {
+    margin-left: 260px;
+    background: var(--off);
+    min-height: 100vh;
+    flex: 1;
+  }
+
+  /* ── TOP BAR ─────────────────────────────────────── */
+  .topbar {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    padding: 12px 32px;
+    display: flex; align-items: center; gap: 12px;
+    position: sticky; top: 0; z-index: 50;
+  }
+  .topbar .breadcrumb {
+    font-size: 12px; color: var(--muted); font-family: var(--mono);
+  }
+  .topbar .page-title {
+    font-size: 15px; font-weight: 700; color: var(--navy);
+    margin-left: auto;
+  }
+  .teams-badge {
+    background: #4B53BC; color: #fff;
+    font-size: 11px; padding: 3px 10px; border-radius: 4px;
+    font-weight: 600; letter-spacing: 0.03em;
+  }
+
+  /* ── PAGE CONTENT ────────────────────────────────── */
+  .page { display: none; padding: 32px; max-width: 860px; }
+  .page.active { display: block; }
+
+  /* ── CARDS ───────────────────────────────────────── */
+  .hero-card {
+    background: linear-gradient(135deg, var(--navy) 0%, #1565C0 100%);
+    border-radius: 16px; padding: 36px 40px;
+    color: #fff; margin-bottom: 28px;
+    position: relative; overflow: hidden;
+  }
+  .hero-card::after {
+    content: '📡';
+    position: absolute; right: 32px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 72px; opacity: 0.15;
+  }
+  .hero-card .kicker {
+    font-family: var(--mono); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.12em; color: rgba(255,255,255,0.6);
+    text-transform: uppercase; margin-bottom: 10px;
+  }
+  .hero-card h1 { font-size: 28px; font-weight: 700; line-height: 1.2; margin-bottom: 10px; }
+  .hero-card p  { font-size: 14px; color: rgba(255,255,255,0.8); line-height: 1.6; max-width: 520px; }
+
+  .card {
+    background: #fff; border-radius: 12px;
+    border: 1px solid var(--border);
+    padding: 24px 28px; margin-bottom: 20px;
+  }
+  .card-teal   { border-left: 4px solid var(--teal); }
+  .card-blue   { border-left: 4px solid var(--blue); }
+  .card-amber  { border-left: 4px solid var(--amber); }
+  .card-red    { border-left: 4px solid var(--red); }
+  .card-navy   { border-left: 4px solid var(--navy); }
+
+  .card-header {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px;
+  }
+  .card-header .icon { font-size: 20px; }
+  .card-header h3 {
+    font-size: 15px; font-weight: 700; color: var(--navy);
+  }
+  .card-header .tag {
+    margin-left: auto; font-family: var(--mono);
+    font-size: 10px; padding: 2px 8px; border-radius: 4px;
+    font-weight: 700;
+  }
+  .tag-green  { background: #E8F5E9; color: #2E7D32; }
+  .tag-blue   { background: #E3F2FD; color: #1565C0; }
+  .tag-amber  { background: #FFF8E1; color: #F57F17; }
+  .tag-red    { background: #FFEBEE; color: #C62828; }
+
+  /* ── TYPOGRAPHY ─────────────────────────────────── */
+  .section-h { font-size: 18px; font-weight: 700; color: var(--navy); margin: 28px 0 14px; }
+  .sub-h { font-size: 14px; font-weight: 600; color: var(--blue); margin: 16px 0 8px; }
+
+  p, li { font-size: 14px; line-height: 1.7; color: var(--text); }
+  p + p { margin-top: 10px; }
+  ul, ol { padding-left: 20px; margin: 8px 0; }
+  li { margin-bottom: 6px; }
+
+  .mono { font-family: var(--mono); font-size: 12px; }
+  .highlight { background: #FFF9C4; padding: 1px 4px; border-radius: 3px; }
+  .code-pill {
+    display: inline-block; background: #1E2A3A; color: #7DD3FC;
+    font-family: var(--mono); font-size: 12px;
+    padding: 2px 8px; border-radius: 4px;
+  }
+
+  /* ── VIDEO EMBED ─────────────────────────────────── */
+  .video-card {
+    background: var(--navy); border-radius: 12px;
+    padding: 20px 24px; margin-bottom: 20px;
+    display: flex; align-items: center; gap: 20px;
+  }
+  .video-thumb {
+    width: 120px; height: 68px; border-radius: 8px;
+    background: #1565C0; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+  }
+  .video-info h4 { color: #fff; font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .video-info p  { color: rgba(255,255,255,0.6); font-size: 12px; line-height: 1.5; }
+  .video-btn {
+    margin-top: 10px;
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--sky); color: #fff;
+    padding: 7px 16px; border-radius: 6px;
+    font-size: 13px; font-weight: 600;
+    text-decoration: none; border: none; cursor: pointer;
+    transition: background 0.15s;
+  }
+  .video-btn:hover { background: #1976D2; }
+
+  /* ── TABLES ──────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 12px 0; }
+  th {
+    background: var(--navy); color: #fff;
+    padding: 10px 14px; text-align: left;
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 0.03em;
+  }
+  td { padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:nth-child(even) td { background: var(--ice); }
+  tr:hover td { background: #EEF4FB; }
+
+  /* ── ACTIVITY BOXES ──────────────────────────────── */
+  .activity {
+    border: 2px solid var(--border); border-radius: 10px;
+    margin-bottom: 20px; overflow: hidden;
+  }
+  .activity-hdr {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 18px;
+    font-weight: 700; font-size: 13px;
+  }
+  .activity-hdr.teal  { background: #E0F2F1; color: #00695C; }
+  .activity-hdr.blue  { background: #E3F2FD; color: #0D47A1; }
+  .activity-hdr.amber { background: #FFF8E1; color: #E65100; }
+  .activity-hdr.red   { background: #FFEBEE; color: #B71C1C; }
+  .activity-hdr.purple{ background: #EDE7F6; color: #4527A0; }
+  .activity-body { padding: 18px; background: #fff; }
+
+  /* ── WRITE LINES ─────────────────────────────────── */
+  .write-lines { margin-top: 10px; }
+  .write-line {
+    border-bottom: 2px dashed #CBD5E1;
+    min-height: 32px; margin-bottom: 10px;
+    padding-bottom: 4px;
+  }
+
+  /* ── STEP TRACKER ────────────────────────────────── */
+  .steps { counter-reset: step; list-style: none; padding: 0; }
+  .steps li {
+    counter-increment: step;
+    display: flex; gap: 14px; margin-bottom: 16px; align-items: flex-start;
+  }
+  .steps li::before {
+    content: counter(step);
+    background: var(--navy); color: #fff;
+    width: 26px; height: 26px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 12px; font-weight: 700;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .steps li .step-text { font-size: 14px; line-height: 1.6; }
+
+  /* ── CHECKLIST ───────────────────────────────────── */
+  .checklist { list-style: none; padding: 0; }
+  .checklist li {
+    display: flex; gap: 10px; align-items: flex-start;
+    padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 14px;
+  }
+  .checklist li:last-child { border: none; }
+  .checklist .box {
+    width: 18px; height: 18px; border: 2px solid #94A3B8;
+    border-radius: 3px; flex-shrink: 0; margin-top: 2px;
+  }
+
+  /* ── INFO PILL ROW ───────────────────────────────── */
+  .pill-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0; }
+  .pill {
+    padding: 6px 14px; border-radius: 20px;
+    font-size: 12px; font-weight: 600;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .pill-blue  { background: var(--ice); color: var(--blue); border: 1px solid #BBDEFB; }
+  .pill-green { background: var(--mint); color: #2E7D32; border: 1px solid #A5D6A7; }
+  .pill-amber { background: var(--cream); color: #F57F17; border: 1px solid #FFE082; }
+  .pill-red   { background: #FFEBEE; color: var(--red); border: 1px solid #FFCDD2; }
+
+  /* ── FREQ COMPARISON ─────────────────────────────── */
+  .freq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 14px 0; }
+  .freq-box {
+    border-radius: 10px; padding: 18px;
+    border: 2px solid;
+  }
+  .freq-2g { background: #E8F5E9; border-color: #4CAF50; }
+  .freq-5g { background: #E3F2FD; border-color: #2196F3; }
+  .freq-box h4 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+  .freq-2g h4 { color: #2E7D32; }
+  .freq-5g h4 { color: #1565C0; }
+  .freq-box ul { padding-left: 16px; font-size: 13px; }
+  .freq-box .verdict {
+    margin-top: 10px; padding: 6px 10px; border-radius: 6px;
+    font-size: 12px; font-weight: 700;
+  }
+  .freq-2g .verdict { background: #C8E6C9; color: #1B5E20; }
+  .freq-5g .verdict { background: #BBDEFB; color: #0D47A1; }
+
+  /* ── COMPONENT CARDS ─────────────────────────────── */
+  .component-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin: 14px 0; }
+  .comp-card {
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px;
+  }
+  .comp-card .comp-icon { font-size: 28px; margin-bottom: 8px; }
+  .comp-card h4 { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+  .comp-card p  { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .comp-card .pin { font-family: var(--mono); font-size: 11px; color: var(--red); margin-top: 6px; }
+
+  /* ── WIRING TABLE ────────────────────────────────── */
+  .wire-table td:first-child { font-family: var(--mono); font-size: 12px; color: var(--red); font-weight: 700; }
+  .wire-table td:last-child  { font-family: var(--mono); font-size: 12px; color: #1565C0; }
+
+  /* ── LEARNING INTENTIONS ─────────────────────────── */
+  .li-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .li-box {
+    border-radius: 8px; padding: 14px 16px;
+  }
+  .li-know { background: var(--ice); border: 1px solid #BBDEFB; }
+  .li-do   { background: var(--mint); border: 1px solid #A5D6A7; }
+  .li-box h4 { font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--muted); margin-bottom: 8px; }
+  .li-box ul { padding-left: 16px; font-size: 13px; }
+
+  /* ── PROGRESS BAR ────────────────────────────────── */
+  .progress-section { background: #fff; border-radius: 10px; padding: 18px 20px; margin-bottom: 20px; border: 1px solid var(--border); }
+  .progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  .progress-track { background: #E2E8F0; border-radius: 6px; height: 8px; }
+  .progress-fill  { height: 8px; border-radius: 6px; background: linear-gradient(90deg, var(--sky), var(--teal)); }
+
+  /* ── SCENARIO CARDS ──────────────────────────────── */
+  .scenario { background: #F8FAFC; border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; margin-bottom: 14px; }
+  .scenario .q { font-weight: 600; font-size: 13px; color: var(--navy); margin-bottom: 6px; }
+  .scenario .hint { font-size: 11px; color: var(--muted); font-style: italic; margin-bottom: 8px; }
+
+  /* ── BUTTONS ─────────────────────────────────────── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 18px; border-radius: 6px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    border: none; transition: all 0.15s; font-family: var(--sans);
+  }
+  .btn-primary { background: var(--sky); color: #fff; }
+  .btn-primary:hover { background: #1976D2; }
+  .btn-outline { background: transparent; color: var(--blue); border: 2px solid var(--blue); }
+  .btn-outline:hover { background: var(--ice); }
+
+  /* ── DIVIDER ─────────────────────────────────────── */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+  /* ── ALERT ───────────────────────────────────────── */
+  .alert {
+    border-radius: 8px; padding: 14px 18px;
+    display: flex; gap: 12px; margin-bottom: 16px; font-size: 13px;
+  }
+  .alert-amber { background: #FFF8E1; border-left: 4px solid var(--amber); color: #5D4037; }
+  .alert-blue  { background: var(--ice); border-left: 4px solid var(--sky); color: #0D47A1; }
+  .alert-green { background: var(--mint); border-left: 4px solid var(--teal); color: #1B5E20; }
+  .alert-red   { background: #FFEBEE; border-left: 4px solid var(--red); color: #B71C1C; }
+  .alert-icon  { font-size: 18px; flex-shrink: 0; }
+
+  /* ── EXIT TICKET ─────────────────────────────────── */
+  .exit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .exit-box  { border-radius: 8px; padding: 16px; }
+  .exit-know { background: var(--mint); border: 1px solid #A5D6A7; }
+  .exit-q    { background: #FFEBEE; border: 1px solid #FFCDD2; }
+  .exit-box h4 { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 10px; }
+
+  /* ── CONFIDENCE SCALE ────────────────────────────── */
+  .conf-scale { display: flex; gap: 0; margin-top: 14px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+  .conf-box {
+    flex: 1; text-align: center; padding: 12px 6px;
+    font-size: 12px; cursor: pointer; transition: all 0.15s;
+    border-right: 1px solid var(--border);
+  }
+  .conf-box:last-child { border: none; }
+  .conf-box:nth-child(1) { background: #FFEBEE; }
+  .conf-box:nth-child(2) { background: #FFF8E1; }
+  .conf-box:nth-child(3) { background: #E8F5E9; }
+  .conf-box:nth-child(4) { background: #E3F2FD; }
+  .conf-box:nth-child(5) { background: var(--lavender); }
+  .conf-box:hover { filter: brightness(0.93); }
+  .conf-box .num { font-size: 20px; font-weight: 700; display: block; }
+
+  /* responsive */
+  @media (max-width: 700px) {
+    #sidebar { width: 200px; }
+    #main { margin-left: 200px; }
+    .page { padding: 18px; }
+    .freq-grid, .li-grid, .exit-grid, .component-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ══ SIDEBAR ════════════════════════════════════════════════════ -->
+<nav id="sidebar">
+  <div class="nb-brand">
+    <div class="icon">📓</div>
+    <h2>FPV Spy Car<br>Class Notebook</h2>
+    <p>Mechatronics · Yr 8 & 9</p>
+  </div>
+
+  <div class="section-group">
+    <div class="section-label">📚 Content Library</div>
+    <div class="nav-item active" onclick="show('home')" id="nav-home">
+      <span class="dot" style="background:#2196F3"></span> Unit Home
+    </div>
+    <div class="nav-item" onclick="show('wifi')" id="nav-wifi">
+      <span class="dot" style="background:#00897B"></span> How WiFi Works
+    </div>
+    <div class="nav-item" onclick="show('components')" id="nav-components">
+      <span class="dot" style="background:#F59E0B"></span> Component Guide
+    </div>
+    <div class="nav-item" onclick="show('wiring')" id="nav-wiring">
+      <span class="dot" style="background:#C62828"></span> Wiring Reference
+    </div>
+    <div class="nav-item" onclick="show('code')" id="nav-code">
+      <span class="dot" style="background:#7B1FA2"></span> Code Reference
+    </div>
+  </div>
+
+  <div class="section-group">
+    <div class="section-label">✏️ My Work</div>
+    <div class="nav-item" onclick="show('activities')" id="nav-activities">
+      <span class="dot" style="background:#1565C0"></span> WiFi Activities
+      <span class="badge">4</span>
+    </div>
+    <div class="nav-item" onclick="show('design')" id="nav-design">
+      <span class="dot" style="background:#00897B"></span> Chassis Design
+    </div>
+    <div class="nav-item" onclick="show('journal')" id="nav-journal">
+      <span class="dot" style="background:#E91E63"></span> Learning Journal
+    </div>
+  </div>
+
+  <div class="section-group">
+    <div class="section-label">🏁 Assessment</div>
+    <div class="nav-item" onclick="show('checklist')" id="nav-checklist">
+      <span class="dot" style="background:#FF6F00"></span> Progress Checklist
+    </div>
+  </div>
+</nav>
+
+<!-- ══ MAIN ═══════════════════════════════════════════════════════ -->
+<main id="main">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <span class="breadcrumb" id="breadcrumb">Content Library › Unit Home</span>
+    <span class="page-title" id="page-title">Unit Home</span>
+    <span class="teams-badge">MS Teams</span>
+  </div>
+
+  <!-- ── PAGE: HOME ───────────────────────────────────── -->
+  <div class="page active" id="page-home">
+
+    <div class="hero-card">
+      <div class="kicker">Mechatronics Elective · Year 8 & 9 · Queensland</div>
+      <h1>FPV Spy Car Project</h1>
+      <p>Build a WiFi-controlled robot car with a live camera stream using the ESP32-CAM microcontroller. Use this notebook to guide your independent learning.</p>
+    </div>
+
+    <div class="progress-section">
+      <div class="progress-label"><span>Unit Progress</span><span>Start here 👇</span></div>
+      <div class="progress-track"><div class="progress-fill" style="width:15%"></div></div>
+    </div>
+
+    <div class="section-h">How to Use This Notebook</div>
+    <ol class="steps">
+      <li><div class="step-text">Start with <strong>How WiFi Works</strong> — read through the theory and watch the video before doing any activities.</div></li>
+      <li><div class="step-text">Read the <strong>Component Guide</strong> — know what every part does before you pick up a wire.</div></li>
+      <li><div class="step-text">Study the <strong>Wiring Reference</strong> — understand the circuit before you build it.</div></li>
+      <li><div class="step-text">Complete the <strong>WiFi Activities</strong> in your own section — answer all questions in full sentences.</div></li>
+      <li><div class="step-text">Sketch your <strong>Chassis Design</strong> before your build lesson.</div></li>
+      <li><div class="step-text">Keep your <strong>Learning Journal</strong> updated after every lesson.</div></li>
+    </ol>
+
+    <div class="section-h">Unit Learning Intentions</div>
+    <div class="li-grid">
+      <div class="li-box li-know">
+        <h4>I will know…</h4>
+        <ul>
+          <li>How WiFi uses radio waves to send data</li>
+          <li>The difference between 2.4 GHz and 5 GHz</li>
+          <li>What each component does in the car</li>
+          <li>How a single battery powers the whole system</li>
+          <li>How the ESP32-CAM streams video over WiFi</li>
+        </ul>
+      </div>
+      <div class="li-box li-do">
+        <h4>I will be able to…</h4>
+        <ul>
+          <li>Wire the L298N motor controller correctly</li>
+          <li>Upload code to the ESP32-CAM via Arduino IDE</li>
+          <li>Connect to the car's live video stream</li>
+          <li>Control the car using a web browser</li>
+          <li>Troubleshoot WiFi connection problems</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-h">Quick Links</div>
+    <div class="pill-row">
+      <span class="pill pill-blue">📡 Unit: Mechatronics</span>
+      <span class="pill pill-green">✅ AC v9.0 Aligned</span>
+      <span class="pill pill-amber">⚡ 2 x DC Motors</span>
+      <span class="pill pill-blue">📷 ESP32-CAM</span>
+      <span class="pill pill-red">🔋 Single 9V Supply</span>
+    </div>
+  </div>
+
+  <!-- ── PAGE: WIFI ────────────────────────────────────── -->
+  <div class="page" id="page-wifi">
+
+    <div class="hero-card" style="background:linear-gradient(135deg,#00695C,#00897B)">
+      <div class="kicker">Theory — Digital Technologies</div>
+      <h1>How WiFi Works</h1>
+      <p>Before you can troubleshoot a WiFi connection or explain why your ESP32-CAM won't connect, you need to understand what WiFi actually is.</p>
+    </div>
+
+    <!-- Video -->
+    <div class="video-card">
+      <div class="video-thumb">▶️</div>
+      <div class="video-info">
+        <h4>That's How WiFi Works</h4>
+        <p>Belong Australia · 2019 · ~3 min<br>Covers: radio waves, 2.4 GHz vs 5 GHz, routers, signal interference, device congestion</p>
+        <a class="video-btn" href="https://youtu.be/hePLDVbULZc" target="_blank">▶ Watch Video</a>
+      </div>
+    </div>
+
+    <div class="alert alert-amber">
+      <span class="alert-icon">📌</span>
+      <div><strong>Watch the video twice.</strong> First time — just watch. Second time — take notes in your <em>WiFi Activities</em> section as you go. Use the timestamps below to pause and write.</div>
+    </div>
+
+    <div class="section-h">Key Timestamps</div>
+    <table>
+      <tr><th>Time</th><th>Topic</th><th>Watch for…</th></tr>
+      <tr><td class="mono">~0:45</td><td>What is WiFi</td><td>What type of wave is used? What else uses this?</td></tr>
+      <tr><td class="mono">~1:45</td><td>2.4 GHz vs 5 GHz</td><td>Which band has more range? Which is faster?</td></tr>
+      <tr><td class="mono">~2:45</td><td>Signal & interference</td><td>What slows WiFi down? How many devices is too many?</td></tr>
+    </table>
+
+    <div class="section-h">Theory Notes</div>
+
+    <div class="card card-teal">
+      <div class="card-header"><span class="icon">📡</span><h3>1. WiFi Uses Radio Waves</h3></div>
+      <p>WiFi transmits data as <strong>radio waves</strong> — the same type of electromagnetic wave used by FM radio, TV broadcasts, and mobile phones, but at a much higher frequency. Your router converts digital data (0s and 1s) into radio waves, broadcasts them through its antenna, and your device's wireless chip receives and decodes them.</p>
+      <p style="margin-top:10px">Radio waves travel at the speed of light and can pass through air, walls, and most building materials — though solid objects reduce signal strength.</p>
+    </div>
+
+    <div class="card card-blue">
+      <div class="card-header"><span class="icon">📶</span><h3>2. Two Frequency Bands</h3><span class="tag tag-red">⚠️ Critical for ESP32-CAM</span></div>
+      <div class="freq-grid">
+        <div class="freq-box freq-2g">
+          <h4>2.4 GHz</h4>
+          <ul>
+            <li>2,400,000,000 waves/sec</li>
+            <li>Range up to ~45m indoors</li>
+            <li>Passes through walls better</li>
+            <li>More interference (shared with microwaves, Bluetooth)</li>
+            <li>Slower data speed</li>
+          </ul>
+          <div class="verdict">✅ ESP32-CAM ONLY supports 2.4 GHz</div>
+        </div>
+        <div class="freq-box freq-5g">
+          <h4>5 GHz</h4>
+          <ul>
+            <li>5,000,000,000 waves/sec</li>
+            <li>Range up to ~20m indoors</li>
+            <li>Blocked by walls more easily</li>
+            <li>Less interference (fewer devices)</li>
+            <li>Faster data speed</li>
+          </ul>
+          <div class="verdict">❌ ESP32-CAM cannot connect to 5 GHz</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-navy">
+      <div class="card-header"><span class="icon">🌐</span><h3>3. What Does a Router Do?</h3></div>
+      <p>A router creates a <strong>Local Area Network (LAN)</strong> — a private network that devices can join to communicate with each other. When your phone sends a motor command to the ESP32-CAM, the data travels as radio waves to the router, and the router forwards it to the car. <strong>No internet is required</strong> for this — it all happens locally.</p>
+      <p style="margin-top:10px">Our project uses a dedicated router with no internet connection. This means students keep their WiFi and the cars all work without school network restrictions.</p>
+    </div>
+
+    <div class="card card-amber">
+      <div class="card-header"><span class="icon">⚠️</span><h3>4. What Reduces WiFi Signal?</h3></div>
+      <table>
+        <tr><th>Factor</th><th>Why It Matters for the Spy Car</th></tr>
+        <tr><td><strong>Distance</strong></td><td>The further the car drives from the router, the weaker the signal. Video stream becomes choppy before dropping out.</td></tr>
+        <tr><td><strong>Walls & obstacles</strong></td><td>Metal benches, concrete walls, and filing cabinets all absorb 2.4 GHz signals. Drive around obstacles, not through them.</td></tr>
+        <tr><td><strong>Too many devices</strong></td><td>20 ESP32-CAMs on one router = 20 devices competing for bandwidth. Use QVGA resolution instead of VGA in class.</td></tr>
+        <tr><td><strong>Interference</strong></td><td>Microwaves, Bluetooth speakers, and other WiFi networks all share 2.4 GHz. Move the router away from these devices.</td></tr>
+        <tr><td><strong>Wrong frequency</strong></td><td>If the router broadcasts only 5 GHz, the ESP32-CAM will try for 15 seconds then fail with a slow LED flash.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── PAGE: COMPONENTS ──────────────────────────────── -->
+  <div class="page" id="page-components">
+
+    <div class="hero-card" style="background:linear-gradient(135deg,#E65100,#F59E0B)">
+      <div class="kicker">Reference — Design & Technology</div>
+      <h1>Component Guide</h1>
+      <p>Know what every part does before you pick up a wire. You are responsible for not damaging components.</p>
+    </div>
+
+    <div class="component-grid">
+      <div class="comp-card">
+        <div class="comp-icon">📷</div>
+        <h4>ESP32-CAM (AI Thinker)</h4>
+        <p>The brain of the car. A microcontroller with a built-in camera and WiFi radio. Runs a web server, streams MJPEG video on port 81, and accepts motor commands on port 80.</p>
+        <div class="pin">GPIO 13, 14, 15, 12 → L298N</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-icon">⚡</div>
+        <h4>L298N Motor Controller</h4>
+        <p>The H-Bridge. Takes low-power logic signals (3.3V) from the ESP32 and switches high-current motor power. Also has an onboard 5V regulator to power the ESP32 from the battery.</p>
+        <div class="pin">IN1–IN4 ← ESP32 | OUT1–4 → Motors</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-icon">🔧</div>
+        <h4>TT DC Gearbox Motor × 2</h4>
+        <p>200 RPM, 3–6V DC motors. One drives each rear wheel. Direction is controlled by the L298N. No PWM needed — ENA/ENB jumpers stay ON for full speed.</p>
+        <div class="pin">OUT1/OUT2 + OUT3/OUT4 from L298N</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-icon">🔵</div>
+        <h4>Omniwheel (Front)</h4>
+        <p>A passive front castor wheel that can rotate in any direction. Supports the chassis and allows smooth turning with the two rear-drive motors.</p>
+        <div class="pin">No electrical connection — structural only</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-icon">🔋</div>
+        <h4>Pololu 6×AA Battery Holder</h4>
+        <p>6 × 1.5V AA batteries = 9V. Single power supply for the entire car. Has an inline on/off switch. Powers motors via L298N and the ESP32 via L298N's 5V regulator pin.</p>
+        <div class="pin">+ → L298N 12V screw | − → GND</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-icon">📦</div>
+        <h4>Cardboard Box Chassis</h4>
+        <p>Your structural frame. Lightweight, easy to cut and modify. Hold components with hot glue or cable ties. Design it so the battery switch is accessible from outside.</p>
+        <div class="pin">No electrical connection — structural only</div>
+      </div>
+    </div>
+
+    <div class="section-h">Power Chain</div>
+    <div class="alert alert-blue">
+      <span class="alert-icon">💡</span>
+      <div>ONE battery pack powers everything. Here is the flow:<br><br>
+      <strong>Battery → Switch → L298N 12V input → Motors (via H-Bridge)</strong><br>
+      <strong>Battery → L298N onboard regulator → 5V pin → ESP32-CAM</strong>
+      </div>
+    </div>
+
+    <div class="alert alert-red">
+      <span class="alert-icon">⚠️</span>
+      <div><strong>Safety Rule:</strong> Always turn the battery switch OFF before making any wiring changes. Motors can spin unexpectedly when power is applied. Never connect or disconnect wires while the switch is ON.</div>
+    </div>
+  </div>
+
+  <!-- ── PAGE: WIRING ──────────────────────────────────── -->
+  <div class="page" id="page-wiring">
+
+    <div class="hero-card" style="background:linear-gradient(135deg,#B71C1C,#C62828)">
+      <div class="kicker">Reference — Wiring Diagram</div>
+      <h1>Wiring Reference</h1>
+      <p>Study this table before you wire anything. One wrong connection can damage the ESP32-CAM permanently.</p>
+    </div>
+
+    <div class="alert alert-red">
+      <span class="alert-icon">🔴</span>
+      <div><strong>Critical:</strong> GPIO16 on the AI Thinker ESP32-CAM is connected to the PSRAM bus. <strong>Never connect anything to GPIO16.</strong> IN4 uses GPIO12 instead.</div>
+    </div>
+
+    <div class="section-h">ESP32-CAM → L298N Connections</div>
+    <table class="wire-table">
+      <tr><th>ESP32-CAM Pin</th><th>→</th><th>L298N Pin</th><th>Function</th></tr>
+      <tr><td>GPIO 13</td><td>→</td><td>IN1</td><td>Left motor A direction</td></tr>
+      <tr><td>GPIO 14</td><td>→</td><td>IN2</td><td>Left motor B direction</td></tr>
+      <tr><td>GPIO 15</td><td>→</td><td>IN3</td><td>Right motor A direction</td></tr>
+      <tr><td>GPIO 12</td><td>→</td><td>IN4</td><td>Right motor B direction</td></tr>
+      <tr><td>GND</td><td>→</td><td>GND</td><td>Shared ground (essential)</td></tr>
+      <tr><td>5V pin</td><td>←</td><td>5V out</td><td>Power to ESP32 from L298N regulator</td></tr>
+    </table>
+
+    <div class="section-h">L298N → Motors & Battery</div>
+    <table class="wire-table">
+      <tr><th>L298N Terminal</th><th>→</th><th>Connects To</th><th>Note</th></tr>
+      <tr><td>OUT1 + OUT2</td><td>→</td><td>Left DC motor</td><td>Either wire to either terminal — swap if motor runs backward</td></tr>
+      <tr><td>OUT3 + OUT4</td><td>→</td><td>Right DC motor</td><td>Either wire to either terminal — swap if motor runs backward</td></tr>
+      <tr><td>12V screw</td><td>←</td><td>Battery + (via switch)</td><td>9V from 6×AA</td></tr>
+      <tr><td>GND screw</td><td>←</td><td>Battery −</td><td>Shared with ESP32-CAM GND</td></tr>
+      <tr><td>5V jumper</td><td>—</td><td>Leave jumper ON</td><td>Enables onboard 5V regulator</td></tr>
+      <tr><td>ENA jumper</td><td>—</td><td>Leave jumper ON</td><td>Full speed — no PWM needed</td></tr>
+      <tr><td>ENB jumper</td><td>—</td><td>Leave jumper ON</td><td>Full speed — no PWM needed</td></tr>
+    </table>
+
+    <div class="alert alert-green">
+      <span class="alert-icon">✅</span>
+      <div><strong>Check before powering on:</strong> ENA and ENB jumpers are on the L298N board. Make sure they are installed (a small yellow jumper cap connects the two pins). If they are missing, the motors will not turn.</div>
+    </div>
+  </div>
+
+  <!-- ── PAGE: CODE ────────────────────────────────────── -->
+  <div class="page" id="page-code">
+
+    <div class="hero-card" style="background:linear-gradient(135deg,#4527A0,#7B1FA2)">
+      <div class="kicker">Reference — Arduino Code</div>
+      <h1>Code Reference</h1>
+      <p>The only section you need to change is at the very top of the sketch. Everything below the divider is fixed.</p>
+    </div>
+
+    <div class="section-h">The Student Block — Only Change This</div>
+    <div class="card card-amber">
+      <div class="card-header"><span class="icon">✏️</span><h3>Lines to Customise</h3><span class="tag tag-amber">Your changes only</span></div>
+      <pre style="background:#1E2A3A;color:#E2E8F0;padding:16px;border-radius:8px;font-family:var(--mono);font-size:13px;overflow-x:auto;line-height:1.6">#define CAR_NAME  "YourName"         // Change to your name
+const char* WIFI_SSID = "NetworkName"; // WiFi network to connect to
+const char* WIFI_PASS = "Password";    // WiFi password
+
+// Resolution — uncomment ONE line only:
+#define STREAM_SIZE  FRAMESIZE_QVGA   // 320x240 — use in class
+//#define STREAM_SIZE  FRAMESIZE_VGA  // 640x480 — testing only</pre>
+    </div>
+
+    <div class="alert alert-red">
+      <span class="alert-icon">⚠️</span>
+      <div><strong>NEVER submit or share code with a real WiFi password.</strong> Before handing in your folio or sharing your code, replace your password with a placeholder: <span class="code-pill">const char* WIFI_PASS = "REMOVED";</span></div>
+    </div>
+
+    <div class="section-h">Arduino IDE Settings</div>
+    <table>
+      <tr><th>Setting</th><th>Value</th></tr>
+      <tr><td>Board</td><td>AI Thinker ESP32-CAM</td></tr>
+      <tr><td>Partition Scheme</td><td>Huge APP (3MB No OTA / 1MB SPIFFS)</td></tr>
+      <tr><td>Upload Speed</td><td>115200</td></tr>
+      <tr><td>PSRAM</td><td>Enabled</td></tr>
+    </table>
+
+    <div class="section-h">Upload Sequence</div>
+    <ol class="steps">
+      <li><div class="step-text">Change WIFI_SSID, WIFI_PASS, and CAR_NAME at the top of the sketch.</div></li>
+      <li><div class="step-text">Bridge <strong>GPIO0 to GND</strong> on the ESP32-CAM (hold LOW during upload).</div></li>
+      <li><div class="step-text">Power on the board, then click <strong>Upload</strong> in Arduino IDE.</div></li>
+      <li><div class="step-text">Wait for <strong>"Done uploading"</strong> in the console.</div></li>
+      <li><div class="step-text">Remove the GPIO0–GND bridge, then press the <strong>Reset button</strong>.</div></li>
+      <li><div class="step-text">Open <strong>Serial Monitor at 115200 baud</strong> and wait for the IP address.</div></li>
+      <li><div class="step-text">Make sure your device is on the same WiFi network, then open the IP in Chrome.</div></li>
+    </ol>
+
+    <div class="section-h">LED Error Codes</div>
+    <table>
+      <tr><th>Flash Pattern</th><th>Meaning</th><th>Fix</th></tr>
+      <tr><td>Rapid (200ms)</td><td>Camera init failed</td><td>Check partition scheme, ribbon cable, PSRAM enabled</td></tr>
+      <tr><td>Slow (500ms)</td><td>WiFi connection failed</td><td>Check SSID, password, 2.4 GHz band, router on</td></tr>
+      <tr><td>No flash / solid</td><td>Running normally</td><td>Check Serial Monitor for IP address</td></tr>
+    </table>
+  </div>
+
+  <!-- ── PAGE: ACTIVITIES ──────────────────────────────── -->
+  <div class="page" id="page-activities">
+
+    <div class="hero-card" style="background:linear-gradient(135deg,#1565C0,#0288D1)">
+      <div class="kicker">My Work — WiFi Activities</div>
+      <h1>WiFi Learning Activities</h1>
+      <p>Complete all four activities. Write your answers in full sentences. Use the WiFi Theory page and the video to help you.</p>
+    </div>
+
+    <div class="alert alert-amber">
+      <span class="alert-icon">📌</span>
+      <div>Watch the video first: <strong><a href="https://youtu.be/hePLDVbULZc" target="_blank" style="color:#1565C0">https://youtu.be/hePLDVbULZc</a></strong> — then come back and complete the activities below.</div>
+    </div>
+
+    <!-- Activity 1 -->
+    <div class="activity">
+      <div class="activity-hdr teal">📡 Activity 1 — Before You Watch</div>
+      <div class="activity-body">
+        <p>Think about the last time you connected a device to WiFi. What did you have to do? What happened? Write 3–5 sentences.</p>
+        <div class="write-lines">
+          <div class="write-line"></div>
+          <div class="write-line"></div>
+          <div class="write-line"></div>
+          <div class="write-line"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Activity 2 -->
+    <div class="activity">
+      <div class="activity-hdr blue">📺 Activity 2 — During the Video</div>
+      <div class="activity-body">
+        <p style="margin-bottom:14px">Pause at the timestamps from the WiFi page and answer these questions:</p>
+        <div class="sub-h">Q1 — What type of wave does WiFi use to send data? Name two other technologies that use the same type of wave.</div>
+        <div class="write-lines">
+          <div class="write-line"></div><div class="write-line"></div>
+        </div>
+        <div class="sub-h">Q2 — Fill in the table:</div>
+        <table>
+          <tr><th>Band</th><th>Frequency</th><th>Better range or speed?</th><th>ESP32-CAM can use?</th></tr>
+          <tr><td>Band 1</td><td></td><td></td><td></td></tr>
+          <tr><td>Band 2</td><td></td><td></td><td></td></tr>
+        </table>
+        <div class="sub-h" style="margin-top:14px">Q3 — List TWO things the video says can slow down your WiFi:</div>
+        <div class="write-lines">
+          <div class="write-line"></div><div class="write-line"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Activity 3 -->
+    <div class="activity">
+      <div class="activity-hdr amber">🧠 Activity 3 — After the Video</div>
+      <div class="activity-body">
+        <div class="sub-h">Q1 — In your own words, explain what a router does. Use the term "local area network" in your answer.</div>
+        <div class="write-lines">
+          <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+        </div>
+        <div class="sub-h">Q2 — A student says: "5 GHz WiFi is always better than 2.4 GHz because it's faster." Do you agree? Give TWO reasons.</div>
+        <div class="write-lines">
+          <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+        </div>
+        <div class="sub-h">Q3 — Why does the FPV Spy Car use a dedicated router with no internet connection? Give TWO reasons.</div>
+        <div class="write-lines">
+          <div class="write-line"></div><div class="write-line"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Activity 4 -->
+    <div class="activity">
+      <div class="activity-hdr purple">🚗 Activity 4 — Connect It to the Spy Car</div>
+      <div class="activity-body">
+        <p style="margin-bottom:14px">Use WiFi theory to explain each scenario. Write a full explanation for each.</p>
+
+        <div class="scenario">
+          <div class="q">Scenario A: The ESP32-CAM connects to one router perfectly but fails on another with the correct password.</div>
+          <div class="hint">Hint: think about frequency bands</div>
+          <div class="write-lines"><div class="write-line"></div><div class="write-line"></div></div>
+        </div>
+
+        <div class="scenario">
+          <div class="q">Scenario B: The live video works fine nearby but becomes choppy when the car drives to the other side of the room.</div>
+          <div class="hint">Hint: think about signal strength and distance</div>
+          <div class="write-lines"><div class="write-line"></div><div class="write-line"></div></div>
+        </div>
+
+        <div class="scenario">
+          <div class="q">Scenario C: All 20 cars in the class are connected to the same router and they all become slow and laggy.</div>
+          <div class="hint">Hint: think about bandwidth and device count</div>
+          <div class="write-lines"><div class="write-line"></div><div class="write-line"></div></div>
+        </div>
+
+        <div class="scenario">
+          <div class="q">Scenario D: The car loses connection when it drives under the metal workbench, but reconnects when it comes back out.</div>
+          <div class="hint">Hint: think about physical obstructions</div>
+          <div class="write-lines"><div class="write-line"></div><div class="write-line"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Exit Ticket -->
+    <div class="section-h">Exit Ticket</div>
+    <div class="exit-grid">
+      <div class="exit-box exit-know">
+        <h4>The most important thing I learned about WiFi today:</h4>
+        <div class="write-lines">
+          <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+        </div>
+      </div>
+      <div class="exit-box exit-q">
+        <h4>One question I still have:</h4>
+        <div class="write-lines">
+          <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-h" style="margin-top:18px">How confident are you? (tap to select)</div>
+    <div class="conf-scale">
+      <div class="conf-box" onclick="setConf(this)"><span class="num">1</span>Not yet</div>
+      <div class="conf-box" onclick="setConf(this)"><span class="num">2</span>Getting there</div>
+      <div class="conf-box" onclick="setConf(this)"><span class="num">3</span>Almost</div>
+      <div class="conf-box" onclick="setConf(this)"><span class="num">4</span>Confident</div>
+      <div class="conf-box" onclick="setConf(this)"><span class="num">5</span>Could teach it!</div>
+    </div>
+  </div>
+
+  <!-- ── PAGE: DESIGN ──────────────────────────────────── -->
+  <div class="page" id="page-design">
+
+    <div class="hero-card" style="background:linear-gradient(135deg,#00695C,#2E7D32)">
+      <div class="kicker">My Work — Chassis Design</div>
+      <h1>My Spy Car Design</h1>
+      <p>Complete your design sketch before the build lesson. A good plan prevents wiring mistakes and broken components.</p>
+    </div>
+
+    <div class="card card-teal">
+      <div class="card-header"><span class="icon">✅</span><h3>Design Checklist</h3><span class="tag tag-green">Must include all items</span></div>
+      <ul class="checklist">
+        <li><span class="box"></span> Top-view sketch (bird's eye looking down)</li>
+        <li><span class="box"></span> Side-view sketch (looking from the side)</li>
+        <li><span class="box"></span> Both rear DC motors and wheels labelled</li>
+        <li><span class="box"></span> Front omniwheel position</li>
+        <li><span class="box"></span> L298N motor controller placement</li>
+        <li><span class="box"></span> ESP32-CAM position (camera pointing forward)</li>
+        <li><span class="box"></span> Battery holder position (switch accessible from outside)</li>
+        <li><span class="box"></span> Approximate dimensions in cm</li>
+        <li><span class="box"></span> Arrows showing direction of travel</li>
+      </ul>
+    </div>
+
+    <div class="alert alert-blue">
+      <span class="alert-icon">💡</span>
+      <div><strong>Design Tips:</strong><br>
+      • Keep the battery switch accessible — you'll use it constantly<br>
+      • Place the ESP32-CAM at the front, camera slightly upward<br>
+      • Keep the L298N close to the motors to shorten wire runs<br>
+      • The omniwheel balances the chassis — position it under the heaviest components</div>
+    </div>
+
+    <div class="section-h">Sketch Space</div>
+    <div style="border:2px dashed #CBD5E1;border-radius:10px;min-height:320px;background:#FAFAFA;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;margin-bottom:14px;">
+      [ Complete your top-view sketch here — use pencil and ruler, then photograph and attach ]
+    </div>
+    <div style="border:2px dashed #CBD5E1;border-radius:10px;min-height:200px;background:#FAFAFA;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;">
+      [ Complete your side-view sketch here — use pencil and ruler, then photograph and attach ]
+    </div>
+
+    <div class="sub-h" style="margin-top:18px">Design Justification</div>
+    <p>Why did you position the components the way you did? Explain your key decisions (3–5 sentences):</p>
+    <div class="write-lines" style="margin-top:10px">
+      <div class="write-line"></div><div class="write-line"></div>
+      <div class="write-line"></div><div class="write-line"></div>
+    </div>
+  </div>
+
+  <!-- ── PAGE: JOURNAL ─────────────────────────────────── -->
+  <div class="page" id="page-journal">
+
+    <div class="hero-card" style="background:linear-gradient(135deg,#880E4F,#C2185B)">
+      <div class="kicker">My Work — Learning Journal</div>
+      <h1>Learning Journal</h1>
+      <p>Update this after every lesson. Be honest — this is for your own reflection, not a performance.</p>
+    </div>
+
+    <div class="alert alert-blue">
+      <span class="alert-icon">📝</span>
+      <div>Add a new entry after each lesson using the template below. Copy the template and fill in a new one each time. Date your entries.</div>
+    </div>
+
+    <div class="card card-navy">
+      <div class="card-header"><span class="icon">📋</span><h3>Journal Entry Template</h3><span class="tag tag-blue">Copy for each lesson</span></div>
+      <div class="sub-h">Date: _____________________ Lesson Topic: _____________________</div>
+      <div class="sub-h" style="margin-top:14px">What we did this lesson:</div>
+      <div class="write-lines"><div class="write-line"></div><div class="write-line"></div></div>
+      <div class="sub-h">What I understood well:</div>
+      <div class="write-lines"><div class="write-line"></div><div class="write-line"></div></div>
+      <div class="sub-h">What I found difficult or confusing:</div>
+      <div class="write-lines"><div class="write-line"></div><div class="write-line"></div></div>
+      <div class="sub-h">What I need to do or find out before next lesson:</div>
+      <div class="write-lines"><div class="write-line"></div><div class="write-line"></div></div>
+    </div>
+  </div>
+
+  <!-- ── PAGE: CHECKLIST ───────────────────────────────── -->
+  <div class="page" id="page-checklist">
+
+    <div class="hero-card" style="background:linear-gradient(135deg,#E65100,#FF6F00)">
+      <div class="kicker">Assessment — Progress Tracker</div>
+      <h1>My Progress Checklist</h1>
+      <p>Tick each item when you have completed it AND can explain it to someone else. Not just done — understood.</p>
+    </div>
+
+    <div class="section-h">Theory Knowledge</div>
+    <ul class="checklist">
+      <li><span class="box"></span> I can explain what type of wave WiFi uses and give two other examples that use the same wave type</li>
+      <li><span class="box"></span> I can compare 2.4 GHz and 5 GHz bands and explain why the ESP32-CAM only supports 2.4 GHz</li>
+      <li><span class="box"></span> I can explain what a router does and the difference between a LAN and the internet</li>
+      <li><span class="box"></span> I can name all 6 components and state the function of each</li>
+      <li><span class="box"></span> I can trace the complete power chain from battery to ESP32-CAM and motors</li>
+      <li><span class="box"></span> I can explain why the on/off switch is important for safety</li>
+    </ul>
+
+    <div class="section-h">Practical Skills</div>
+    <ul class="checklist">
+      <li><span class="box"></span> I have completed my chassis design sketch with all required elements</li>
+      <li><span class="box"></span> I have correctly wired the ESP32-CAM GPIO pins to L298N IN1–IN4</li>
+      <li><span class="box"></span> I have connected the battery, confirmed ENA/ENB jumpers are on, and tested the circuit</li>
+      <li><span class="box"></span> I have uploaded the sketch to the ESP32-CAM using the correct Arduino IDE settings</li>
+      <li><span class="box"></span> I can connect to the car's web page and control the motors</li>
+      <li><span class="box"></span> I can view the live camera stream in Chrome</li>
+    </ul>
+
+    <div class="section-h">Engineering Design Folio</div>
+    <ul class="checklist">
+      <li><span class="box"></span> WiFi Activities (all 4) completed with full sentence answers</li>
+      <li><span class="box"></span> Chassis design sketch included with top-view, side-view, and labels</li>
+      <li><span class="box"></span> Learning journal has at least one entry per lesson</li>
+      <li><span class="box"></span> Arduino code saved with CAR_NAME set and real password removed</li>
+    </ul>
+  </div>
+
+</main>
+</div>
+
+<script>
+const pages = {
+  home:       { bc: "Content Library › Unit Home",        title: "Unit Home" },
+  wifi:       { bc: "Content Library › How WiFi Works",   title: "How WiFi Works" },
+  components: { bc: "Content Library › Component Guide",  title: "Component Guide" },
+  wiring:     { bc: "Content Library › Wiring Reference", title: "Wiring Reference" },
+  code:       { bc: "Content Library › Code Reference",   title: "Code Reference" },
+  activities: { bc: "My Work › WiFi Activities",          title: "WiFi Activities" },
+  design:     { bc: "My Work › Chassis Design",           title: "My Chassis Design" },
+  journal:    { bc: "My Work › Learning Journal",         title: "Learning Journal" },
+  checklist:  { bc: "Assessment › Progress Checklist",    title: "Progress Checklist" },
+};
+
+function show(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.getElementById('nav-' + id).classList.add('active');
+  document.getElementById('breadcrumb').textContent = pages[id].bc;
+  document.getElementById('page-title').textContent = pages[id].title;
+  window.scrollTo(0, 0);
+}
+
+function setConf(el) {
+  document.querySelectorAll('.conf-box').forEach(b => b.style.outline = 'none');
+  el.style.outline = '3px solid #1565C0';
+}
+</script>
+</body>
+</html>
