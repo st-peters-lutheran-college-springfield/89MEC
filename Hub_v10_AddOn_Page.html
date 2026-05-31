@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>89 MECA — v10 Code Guide + Resources</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+:root{
+  --bg:#f8fafc;--surface:#ffffff;--surface2:#f1f5f9;
+  --blue:#1e3a5f;--blue-l:#d6e4f0;--blue-m:#2563eb;
+  --red:#c0392b;--red-l:#fadbd8;
+  --green:#166534;--green-l:#d5f5e3;
+  --purple:#4a235a;--purple-l:#e8daef;
+  --orange:#c05621;--orange-l:#fdebd0;
+  --teal:#0f766e;--teal-l:#ccfbf1;
+  --gray:#64748b;--gray-l:#f1f5f9;
+  --text:#1e293b;--muted:#94a3b8;--border:#e2e8f0;
+  --code-bg:#0d1117;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;font-size:15px}
+.topbar{background:var(--blue);color:#fff;padding:0 32px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2)}
+.topbar-brand{display:flex;align-items:center;gap:12px}
+.topbar-brand .icon{width:32px;height:32px;background:rgba(255,255,255,.15);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.topbar-brand h1{font-size:.9rem;font-weight:700;letter-spacing:1px}
+.topbar-brand span{font-size:.72rem;color:rgba(255,255,255,.6);margin-left:8px}
+.nav-pills{display:flex;gap:2px;flex-wrap:wrap}
+.nav-pill{padding:6px 14px;border-radius:6px;font-size:.78rem;font-weight:500;color:rgba(255,255,255,.7);cursor:pointer;border:none;background:none;transition:all .2s}
+.nav-pill:hover,.nav-pill.active{background:rgba(255,255,255,.15);color:#fff}
+.hero{background:linear-gradient(135deg,var(--blue) 0%,#1e4080 100%);color:#fff;padding:52px 32px 40px;text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:5px 16px;font-size:.72rem;letter-spacing:2px;margin-bottom:16px}
+.hero h1{font-size:2.4rem;font-weight:700;margin-bottom:8px}
+.hero h1 span{color:#60a5fa}
+.hero p{font-size:.95rem;color:rgba(255,255,255,.75);max-width:640px;margin:0 auto 20px}
+.chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.chip{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:4px 14px;font-size:.75rem}
+.section{max-width:1100px;margin:0 auto;padding:52px 32px}
+.section-bg{background:var(--surface);max-width:100%;padding:52px 32px;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.section-bg-inner{max-width:1100px;margin:0 auto}
+.section-tag{font-size:.68rem;letter-spacing:3px;color:var(--blue);text-transform:uppercase;font-weight:600;margin-bottom:6px}
+.section-title{font-size:1.7rem;font-weight:700;margin-bottom:8px}
+.section-sub{color:var(--gray);margin-bottom:32px}
+.tab-nav{display:flex;gap:2px;border-bottom:2px solid var(--border);margin-bottom:24px;flex-wrap:wrap}
+.tab-btn{padding:9px 16px;font-size:.82rem;font-weight:500;color:var(--gray);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s}
+.tab-btn.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:600}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.code-block{background:var(--code-bg);border-radius:10px;padding:20px;overflow-x:auto;margin:14px 0}
+.code-block pre{font-family:'JetBrains Mono',monospace;font-size:.8rem;line-height:1.9;color:#a9dc76;white-space:pre}
+.cm{color:#64748b}.ck{color:#f92672}.cs{color:#eab308}
+.cf{color:#22d3ee}.cn{color:#ae81ff}.co{color:#a9dc76}
+.alert{border-radius:8px;padding:16px 20px;margin:14px 0;font-size:.85rem;line-height:1.6}
+.alert-warn{background:var(--red-l);border-left:4px solid var(--red);color:#7b1c12}
+.alert-info{background:var(--blue-l);border-left:4px solid var(--blue);color:#1e3a5f}
+.alert-green{background:var(--green-l);border-left:4px solid var(--green);color:#14532d}
+.alert-orange{background:var(--orange-l);border-left:4px solid var(--orange);color:#7c2d12}
+.alert-teal{background:var(--teal-l);border-left:4px solid var(--teal);color:#134e4a}
+.alert strong{display:block;margin-bottom:4px;font-size:.9rem}
+.term-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;margin-top:16px}
+.term-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px}
+.term-card .term-name{font-family:'JetBrains Mono',monospace;font-size:.88rem;font-weight:700;color:var(--blue);margin-bottom:4px}
+.term-card .term-type{font-size:.68rem;background:var(--blue-l);color:var(--blue);padding:1px 8px;border-radius:8px;display:inline-block;margin-bottom:8px}
+.term-card p{font-size:.83rem;color:var(--gray);line-height:1.5}
+.term-card code{font-family:'JetBrains Mono',monospace;font-size:.78rem;background:var(--gray-l);padding:1px 5px;border-radius:3px}
+.annotated-row{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-bottom:2px;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.annotated-row .code-side{background:var(--code-bg);padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:#a9dc76;line-height:1.7}
+.annotated-row .explain-side{background:var(--surface);padding:10px 14px;font-size:.8rem;color:var(--text);line-height:1.7;border-left:2px solid var(--blue-l)}
+.annotated-row .line-num{color:#4b5563;margin-right:8px;user-select:none}
+.ip-table{width:100%;border-collapse:collapse;font-size:.83rem}
+.ip-table th{background:var(--blue);color:#fff;padding:9px 12px;text-align:left;font-weight:600}
+.ip-table td{padding:8px 12px;border-bottom:1px solid var(--border)}
+.ip-table tr:nth-child(even) td{background:var(--gray-l)}
+.ip-badge{background:var(--blue-l);color:var(--blue);padding:2px 8px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:600}
+.rule-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.rule-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px}
+.rule-card .rc-icon{font-size:1.8rem;margin-bottom:8px}
+.rule-card h4{font-size:.9rem;font-weight:600;margin-bottom:6px}
+.rule-card p{font-size:.81rem;color:var(--gray);line-height:1.5}
+.rule-card.warn{border-left:4px solid var(--red)}
+.rule-card.ok{border-left:4px solid var(--green)}
+.motor-table{width:100%;border-collapse:collapse;font-size:.83rem;font-family:'JetBrains Mono',monospace}
+.motor-table th{background:var(--blue);color:#fff;padding:9px 12px;text-align:left;font-weight:600;font-family:'Inter',sans-serif}
+.motor-table td{padding:8px 12px;border-bottom:1px solid var(--border)}
+.motor-table tr:nth-child(even) td{background:var(--gray-l)}
+.high{color:#166534;font-weight:700}.low{color:#991b1b;font-weight:700}
+.big-link{display:block;background:var(--surface);border:2px solid var(--blue);border-radius:12px;padding:20px 24px;text-decoration:none;color:var(--text);transition:all .2s;margin-bottom:12px}
+.big-link:hover{background:var(--blue-l);border-color:var(--blue-m)}
+.big-link h4{color:var(--blue);font-size:1rem;margin-bottom:4px}
+.big-link p{font-size:.82rem;color:var(--gray)}
+.big-link .link-badge{font-size:.7rem;font-weight:600;padding:2px 10px;border-radius:8px;display:inline-block;margin-top:8px}
+.chassis-steps{counter-reset:chassis;display:flex;flex-direction:column;gap:10px}
+.chassis-step{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 16px}
+.chassis-step::before{counter-increment:chassis;content:counter(chassis);width:28px;height:28px;border-radius:50%;background:var(--blue);color:#fff;font-weight:700;font-size:.78rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.chassis-step p{font-size:.85rem;color:var(--text)}
+footer{background:var(--blue);color:rgba(255,255,255,.7);text-align:center;padding:24px;font-size:.78rem}
+footer strong{color:#fff}
+@media print{
+  .topbar,.nav-pills{display:none}
+  .hero{padding:20px}
+  .section,.section-bg{padding:20px}
+  .tab-panel{display:block!important}
+  .tab-nav{display:none}
+}
+
+/* ── Interactive cover teacher sign-off form ── */
+.signoff-form{background:var(--gray-l);border-radius:10px;padding:24px;margin-top:8px}
+.signoff-form .sf-row{display:grid;grid-template-columns:180px 1fr;gap:12px;align-items:start;margin-bottom:14px}
+.signoff-form .sf-label{font-size:.82rem;font-weight:600;color:var(--text);padding-top:8px}
+.signoff-form input[type=text],.signoff-form textarea,.signoff-form select{
+  width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:6px;
+  font-family:'Inter',sans-serif;font-size:.84rem;color:var(--text);
+  background:#fff;outline:none;transition:border-color .2s}
+.signoff-form input[type=text]:focus,.signoff-form textarea:focus{border-color:var(--blue)}
+.signoff-form textarea{min-height:80px;resize:vertical}
+.sf-checks{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding-top:4px}
+.sf-check{display:flex;align-items:center;gap:6px;font-size:.84rem;cursor:pointer}
+.sf-check input[type=checkbox]{width:16px;height:16px;accent-color:var(--blue);cursor:pointer}
+.sf-divider{border:none;border-top:1px solid var(--border);margin:20px 0}
+.sf-actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+.sf-btn-print{padding:9px 22px;background:var(--blue);color:#fff;border:none;
+  border-radius:6px;font-size:.84rem;font-weight:600;cursor:pointer;
+  font-family:'Inter',sans-serif;transition:background .2s}
+.sf-btn-print:hover{background:#152d4a}
+.sf-btn-clear{padding:9px 22px;background:#fff;color:var(--gray);
+  border:1px solid var(--border);border-radius:6px;font-size:.84rem;
+  cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s}
+.sf-btn-clear:hover{border-color:var(--red);color:var(--red)}
+.sf-status{font-size:.78rem;color:var(--green);font-weight:600;padding-top:10px;display:none}
+@media print{
+  .sf-actions,.topbar,.nav-pills{display:none!important}
+  .signoff-form input,.signoff-form textarea{border:1px solid #999!important}
+  #cover{display:block!important}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="icon">🕵️</div>
+    <div>
+      <h1>89 MECA — FPV SPY CAR <span>v10 Resources</span></h1>
+    </div>
+  </div>
+  <nav class="nav-pills">
+    <button class="nav-pill active" onclick="goto('code')">Code Guide</button>
+    <button class="nav-pill" onclick="goto('wifi')">WiFi + IP Plan</button>
+    <button class="nav-pill" onclick="goto('video')">Video Rules</button>
+    <button class="nav-pill" onclick="goto('chassis')">Chassis Options</button>
+    <button class="nav-pill" onclick="goto('cover')">Cover Teacher</button>
+  </nav>
+</div>
+
+<section class="hero">
+  <div class="hero-badge">🔧 v10 UPDATE — MOTOR BUG FIXED</div>
+  <h1>Code Annotation + <span>Class Resources</span></h1>
+  <p>Annotated code reference, 20-car WiFi plan, video recording rules, chassis alternatives, and the cover teacher practical guide.</p>
+  <div class="chips">
+    <span class="chip">✅ Motor directions fixed</span>
+    <span class="chip">📡 Standalone hotspot mode</span>
+    <span class="chip">🏫 School network backup</span>
+    <span class="chip">👥 20 cars simultaneously</span>
+    <span class="chip">🎬 Video safety rules</span>
+    <span class="chip">📦 Tissue box chassis option</span>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ CODE ANNOTATION ═══ -->
+<div id="code" class="section">
+  <div class="section-tag">Code Reference</div>
+  <h2 class="section-title">Understanding v10 — Annotated Code Guide</h2>
+  <p class="section-sub">Read each section carefully. This is the reference for your OneNote logbook Page 3. Write annotations in your own words — do not copy this text.</p>
+
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="showTab('t-struct',this)">Program Structure</button>
+    <button class="tab-btn" onclick="showTab('t-terms',this)">Technical Terms</button>
+    <button class="tab-btn" onclick="showTab('t-motors',this)">Motor Fix Explained</button>
+    <button class="tab-btn" onclick="showTab('t-setup',this)">setup() + loop()</button>
+    <button class="tab-btn" onclick="showTab('t-stream',this)">Stream Server</button>
+    <button class="tab-btn" onclick="showTab('t-change',this)">Student Changes</button>
+  </div>
+
+  <!-- PROGRAM STRUCTURE -->
+  <div id="t-struct" class="tab-panel active">
+    <h3 style="margin-bottom:12px;color:var(--blue)">How an Arduino Sketch is Structured</h3>
+    <p style="font-size:.85rem;color:var(--gray);margin-bottom:16px">Every Arduino sketch has the same basic shape. Understanding this shape helps you read any sketch, not just this one.</p>
+    <div class="annotated-row">
+      <div class="code-side"><span class="cm">// 1. Library includes</span><br><span class="ck">#include</span> <span class="cs">"esp_camera.h"</span></div>
+      <div class="explain-side"><strong>Libraries</strong> are collections of pre-written code. <code>#include</code> loads them into your sketch so you can use their functions without writing everything yourself. <code>esp_camera.h</code> is the camera library — it knows how to talk to the OV2640 camera chip.</div>
+    </div>
+    <div class="annotated-row">
+      <div class="code-side"><span class="cm">// 2. Constant definitions</span><br><span class="ck">#define</span> CAR_NAME <span class="cs">"SpyCar_01"</span><br><span class="ck">#define</span> WATCHDOG_MS <span class="cn">1500</span></div>
+      <div class="explain-side"><strong>#define</strong> creates a named constant — a label that is replaced by its value everywhere in the code before compiling. <code>CAR_NAME</code> will be replaced by <code>"SpyCar_01"</code> wherever it appears. This is easier to change than finding every occurrence of the text.</div>
+    </div>
+    <div class="annotated-row">
+      <div class="code-side"><span class="cm">// 3. Global variables</span><br>WebServer pageServer(<span class="cn">80</span>);<br><span class="ck">unsigned long</span> lastCmdTime = <span class="cn">0</span>;</div>
+      <div class="explain-side"><strong>Global variables</strong> are created outside any function and exist for the entire life of the program. <code>pageServer</code> is the web server object that handles port 80. <code>unsigned long</code> is a data type — a positive whole number up to ~4.3 billion (large enough to store milliseconds since boot).</div>
+    </div>
+    <div class="annotated-row">
+      <div class="code-side"><span class="ck">void</span> <span class="cf">motorForward</span>() { ... }<br><span class="ck">void</span> <span class="cf">motorLeft</span>()    { ... }</div>
+      <div class="explain-side"><strong>Functions</strong> are named blocks of reusable code. <code>void</code> means the function doesn't return a value — it just does its job. The name followed by <code>()</code> is how you call (run) it from elsewhere. Parentheses can contain parameters, but these motor functions need none.</div>
+    </div>
+    <div class="annotated-row">
+      <div class="code-side"><span class="ck">void</span> <span class="cf">setup</span>() { ... }<br><span class="ck">void</span> <span class="cf">loop</span>()  { ... }</div>
+      <div class="explain-side"><strong>setup()</strong> is Arduino's special startup function — it runs exactly once when the board is reset. <strong>loop()</strong> is Arduino's main function — it runs over and over, as fast as possible, forever. All Arduino sketches must have these two functions.</div>
+    </div>
+  </div>
+
+  <!-- TECHNICAL TERMS -->
+  <div id="t-terms" class="tab-panel">
+    <h3 style="margin-bottom:12px;color:var(--blue)">Technical Vocabulary — Glossary</h3>
+    <div class="term-grid">
+      <div class="term-card">
+        <div class="term-name">void</div>
+        <div class="term-type">Return type keyword</div>
+        <p>Means "returns nothing". When a function's job is to DO something (like set a pin HIGH) rather than CALCULATE something, its return type is <code>void</code>. e.g. <code>void motorForward()</code> just drives the motors — it doesn't need to give back a number.</p>
+      </div>
+      <div class="term-card">
+        <div class="term-name">setup() / loop()</div>
+        <div class="term-type">Special Arduino functions</div>
+        <p><code>setup()</code> runs once at boot — use it to initialise hardware. <code>loop()</code> runs repeatedly forever — use it to check for inputs and respond. Think of setup as "getting the kitchen ready" and loop as "cooking continuously".</p>
+      </div>
+      <div class="term-card">
+        <div class="term-name">#define</div>
+        <div class="term-type">Preprocessor directive</div>
+        <p>Creates a named constant that is substituted before compiling. <code>#define WATCHDOG_MS 1500</code> means wherever <code>WATCHDOG_MS</code> appears in the code, the compiler replaces it with <code>1500</code>. Easier to change in one place than hunting through code.</p>
+      </div>
+      <div class="term-card">
+        <div class="term-name">static const int</div>
+        <div class="term-type">Variable declaration</div>
+        <p><code>static</code> = only visible in this file. <code>const</code> = cannot change after declaration. <code>int</code> = whole number data type. Together: a file-local constant integer. We use this for GPIO pin numbers because they never change and don't need to be visible outside this file.</p>
+      </div>
+      <div class="term-card">
+        <div class="term-name">digitalWrite(pin, value)</div>
+        <div class="term-type">Built-in Arduino function</div>
+        <p>Sets a GPIO pin to HIGH (3.3V) or LOW (0V). We use this to control the L298N H-bridge inputs. <code>digitalWrite(IN1, HIGH)</code> sets GPIO13 to 3.3V, which tells the L298N to drive current one way through the left motor.</p>
+      </div>
+      <div class="term-card">
+        <div class="term-name">pinMode(pin, mode)</div>
+        <div class="term-type">Built-in Arduino function</div>
+        <p>Configures a GPIO pin as <code>OUTPUT</code> (we control it) or <code>INPUT</code> (we read it). We call <code>pinMode(IN1, OUTPUT)</code> in <code>setupMotors()</code> so the ESP32 knows we want to drive signals out on those pins, not read signals in.</p>
+      </div>
+      <div class="term-card">
+        <div class="term-name">millis()</div>
+        <div class="term-type">Built-in Arduino function</div>
+        <p>Returns the number of milliseconds since the board was last reset or powered on. Used in the watchdog: <code>millis() - lastCmdTime > 1500</code> checks if 1.5 seconds have passed without a motor command. Wraps around (resets to 0) after ~49 days.</p>
+      </div>
+      <div class="term-card">
+        <div class="term-name">WebServer / httpd</div>
+        <div class="term-type">HTTP server objects</div>
+        <p><code>WebServer</code> (port 80) is the Arduino-style server — simple to use, handles the control page and motor commands. <code>httpd_handle_t</code> (port 81) is the ESP-IDF low-level server — faster for streaming. Using two separate servers is FIX 2 — they never block each other.</p>
+      </div>
+      <div class="term-card">
+        <div class="term-name">PROGMEM</div>
+        <div class="term-type">Memory qualifier</div>
+        <p>Stores data in flash (program) memory instead of RAM. The HTML page (<code>const char PAGE[] PROGMEM</code>) is ~2 KB. Storing it in PROGMEM frees that RAM for the camera and WiFi stack. <code>send_P()</code> reads directly from PROGMEM when sending to browser.</p>
+      </div>
+      <div class="term-card">
+        <div class="term-name">MJPEG</div>
+        <div class="term-type">Streaming video format</div>
+        <p>Motion JPEG — a stream of individual JPEG images sent over HTTP, one after another. The browser displays them in sequence to create video. Simpler than H.264 and well-supported. Each frame is separated by a boundary marker string so the browser knows when one image ends and the next begins.</p>
+      </div>
+      <div class="term-card">
+        <div class="term-name">PSRAM</div>
+        <div class="term-type">External RAM chip</div>
+        <p>Pseudo-Static RAM — an extra 4 MB RAM chip soldered next to the ESP32 on the AI Thinker board. Without it, there is only ~320 KB internal RAM — too small for large camera frames. With PSRAM, VGA (640×480) is possible. The sketch checks <code>psramFound()</code> and falls back to QVGA if absent.</p>
+      </div>
+      <div class="term-card">
+        <div class="term-name">GPIO</div>
+        <div class="term-type">Hardware term</div>
+        <p>General Purpose Input/Output — the numbered pins on the ESP32-CAM that can be programmed to read or write digital signals. GPIO13, 14, 15, 12 control the motor H-bridge. GPIO4 controls the flash LED. GPIO16 is reserved for PSRAM and must NOT be used as a motor pin.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOTOR FIX EXPLAINED -->
+  <div id="t-motors" class="tab-panel">
+    <h3 style="margin-bottom:12px;color:var(--blue)">The Motor Direction Bug — Why It Happened and How v10 Fixes It</h3>
+    <div class="alert alert-orange">
+      <strong>🐛 The Bug in v9</strong>
+      In v9, pressing Forward made the car turn left/right, and pressing Left/Right made the car go straight forward or backward. The code logic was not wrong — the physical motor mounting was not accounted for.
+    </div>
+    <p style="margin:14px 0 8px;font-weight:600">Why does mounting direction matter?</p>
+    <p style="font-size:.85rem;color:var(--gray);margin-bottom:16px">The two TT motors are mounted facing each other inside the chassis — a mirror image. Because they face opposite directions, the same electrical signal produces <em>opposite physical rotation</em> for each motor.</p>
+    <p style="font-size:.85rem;color:var(--gray);margin-bottom:16px">Imagine you and a friend stand face-to-face and both spin your right arms forward. Your arm goes one way, their arm goes the other — even though you did the same action. This is what happens with mirrored motors.</p>
+    <table class="motor-table" style="margin-bottom:20px">
+      <thead><tr><th>Function</th><th>IN1</th><th>IN2</th><th>IN3</th><th>IN4</th><th>v9 Physical Result</th><th>v10 Physical Result</th></tr></thead>
+      <tbody>
+        <tr><td>motorForward()</td><td class="high">H</td><td class="low">L</td><td class="high">H</td><td class="low">L</td><td style="color:var(--red)">Pivots left ❌</td><td style="color:var(--green)">Drives forward ✅</td></tr>
+        <tr><td>motorBackward()</td><td class="low">L</td><td class="high">H</td><td class="low">L</td><td class="high">H</td><td style="color:var(--red)">Pivots right ❌</td><td style="color:var(--green)">Drives backward ✅</td></tr>
+        <tr><td>motorLeft()</td><td class="low">L</td><td class="high">H</td><td class="high">H</td><td class="low">L</td><td style="color:var(--red)">Drives forward ❌</td><td style="color:var(--green)">Pivots left ✅</td></tr>
+        <tr><td>motorRight()</td><td class="high">H</td><td class="low">L</td><td class="low">L</td><td class="high">H</td><td style="color:var(--red)">Drives backward ❌</td><td style="color:var(--green)">Pivots right ✅</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:.85rem;color:var(--gray);margin-bottom:10px">The v10 fix accounts for the mirrored mounting. To drive FORWARD (both wheels physically forward), the two motors need opposite electrical signals:</p>
+    <div class="code-block"><pre><span class="cm">// v10 motorForward() — corrected for mirrored motor mounting</span>
+<span class="ck">void</span> <span class="cf">motorForward</span>() {
+  <span class="cm">// Left  motor: IN1=LOW, IN2=HIGH  → left  wheel turns FORWARD physically</span>
+  <span class="cf">digitalWrite</span>(IN1, <span class="cn">LOW</span>);  <span class="cf">digitalWrite</span>(IN2, <span class="cn">HIGH</span>);
+  <span class="cm">// Right motor: IN3=HIGH, IN4=LOW → right wheel turns FORWARD physically</span>
+  <span class="cm">// (opposite signal because the right motor is physically reversed)</span>
+  <span class="cf">digitalWrite</span>(IN3, <span class="cn">HIGH</span>); <span class="cf">digitalWrite</span>(IN4, <span class="cn">LOW</span>);
+}</pre></div>
+    <div class="alert alert-info">
+      <strong>💡 Logbook Connection (Page 3)</strong>
+      Draw the H-bridge truth table for motorForward() in v10. For each pin, write whether it is HIGH or LOW and explain in your own words what each motor does physically as a result.
+    </div>
+  </div>
+
+  <!-- SETUP + LOOP -->
+  <div id="t-setup" class="tab-panel">
+    <h3 style="margin-bottom:12px;color:var(--blue)">setup() and loop() — The Heart of Every Arduino Sketch</h3>
+    <div class="code-block"><pre><span class="ck">void</span> <span class="cf">setup</span>() {
+  <span class="cm">// 1. Disable brownout detector ─────────────────────────────────────────────</span>
+  <span class="cm">//    Motors draw a current spike on startup that momentarily drops the</span>
+  <span class="cm">//    supply voltage. Without this line, the board would keep resetting.</span>
+  WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, <span class="cn">0</span>);
+
+  <span class="cm">// 2. Start serial communication ────────────────────────────────────────────</span>
+  <span class="cm">//    115200 baud = 115,200 bits per second. This lets us print debug</span>
+  <span class="cm">//    messages to Arduino IDE's Serial Monitor.</span>
+  Serial.<span class="cf">begin</span>(<span class="cn">115200</span>);
+
+  <span class="cm">// 3. Initialise motors, LED, camera ────────────────────────────────────────</span>
+  <span class="cf">setupMotors</span>();                            <span class="cm">// Set pins as OUTPUT, stop motors</span>
+  <span class="cf">pinMode</span>(FLASH_LED_PIN, OUTPUT);           <span class="cm">// LED pin as output</span>
+  <span class="cf">digitalWrite</span>(FLASH_LED_PIN, LOW);        <span class="cm">// LED off at startup</span>
+  <span class="cf">setupCamera</span>();                            <span class="cm">// Configure and start camera</span>
+
+  <span class="cm">// 4. Start WiFi (mode determined by #define at top of file) ───────────────</span>
+  WiFi.<span class="cf">mode</span>(WIFI_AP);                        <span class="cm">// AP = Access Point (hotspot)</span>
+  WiFi.<span class="cf">softAP</span>(AP_SSID, AP_PASS);           <span class="cm">// Create the hotspot network</span>
+
+  <span class="cm">// 5. Register URL routes on port 80 ────────────────────────────────────────</span>
+  pageServer.<span class="cf">on</span>(<span class="cs">"/"</span>, []() { ... });       <span class="cm">// Serve the HTML control page</span>
+  pageServer.<span class="cf">on</span>(<span class="cs">"/cmd"</span>, []() { ... });   <span class="cm">// Handle motor commands</span>
+  pageServer.<span class="cf">on</span>(<span class="cs">"/flash"</span>, []() { ... }); <span class="cm">// Handle LED commands</span>
+  pageServer.<span class="cf">begin</span>();
+
+  <span class="cm">// 6. Start stream server on port 81 ────────────────────────────────────────</span>
+  <span class="cf">startStreamServer</span>();
+}</pre></div>
+    <div class="code-block"><pre><span class="ck">void</span> <span class="cf">loop</span>() {
+  <span class="cm">// Process any waiting HTTP requests (button presses from browser).</span>
+  <span class="cm">// Without this line the buttons would never work!</span>
+  pageServer.<span class="cf">handleClient</span>();
+
+  <span class="cm">// ── MOTOR WATCHDOG ──────────────────────────────────────────────────────</span>
+  <span class="cm">// millis() = milliseconds since boot.</span>
+  <span class="cm">// lastCmdTime was set when the last /cmd arrived.</span>
+  <span class="cm">// If the gap exceeds WATCHDOG_MS (1500 ms) → stop motors.</span>
+  <span class="cm">// Safety: if WiFi drops mid-drive, car stops automatically.</span>
+  <span class="ck">if</span> (lastCmdTime > <span class="cn">0</span> && <span class="cf">millis</span>() - lastCmdTime > WATCHDOG_MS) {
+    <span class="cf">motorStop</span>();
+    lastCmdTime = <span class="cn">0</span>;   <span class="cm">// Reset so watchdog doesn't keep firing</span>
+  }
+
+  <span class="cf">delay</span>(<span class="cn">5</span>);  <span class="cm">// Prevent CPU from running at 100% unnecessarily</span>
+}</pre></div>
+    <div class="alert alert-info">
+      <strong>💡 Logbook task — Page 3</strong>
+      Explain the motor watchdog in your own words. What variable does it check? What is the threshold? What does it do when triggered? Why is this a safety feature for a real-world RC vehicle?
+    </div>
+  </div>
+
+  <!-- STREAM SERVER -->
+  <div id="t-stream" class="tab-panel">
+    <h3 style="margin-bottom:12px;color:var(--blue)">The MJPEG Stream — FIX 2 Explained</h3>
+    <div class="alert alert-orange">
+      <strong>⚠️ The problem this solves (v8 bug)</strong>
+      In earlier versions, the stream and motor commands ran on the same HTTP server. When the camera was sending a frame (which can take 30–100 ms on slow WiFi), any button press was queued waiting for the frame to finish. The car felt unresponsive or froze mid-turn. FIX 2 separates them onto different ports.
+    </div>
+    <div class="code-block"><pre><span class="cm">// Port 80 — WebServer (Arduino library)</span>
+<span class="cm">// Handles: HTML page, /cmd?go=X, /flash?val=X</span>
+<span class="cm">// Fast responses, never blocked by the stream.</span>
+WebServer pageServer(<span class="cn">80</span>);
+
+<span class="cm">// Port 81 — esp_http_server (ESP-IDF lower-level library)</span>
+<span class="cm">// Handles: /stream only — loops sending JPEG frames forever.</span>
+<span class="cm">// Runs independently; cannot block the controls on port 80.</span>
+httpd_handle_t streamServer = <span class="cn">NULL</span>;
+
+<span class="cm">// Inside streamHandler() — the frame-sending loop:</span>
+<span class="ck">while</span> (<span class="cn">true</span>) {
+  camera_fb_t* fb = <span class="cf">esp_camera_fb_get</span>();  <span class="cm">// Wait for next JPEG frame</span>
+  <span class="cm">// ... send boundary marker ...</span>
+  <span class="cm">// ... send JPEG header (size) ...</span>
+  <span class="cm">// ... send JPEG image data ...</span>
+  <span class="cf">esp_camera_fb_return</span>(fb);   <span class="cm">// CRITICAL: return buffer to camera</span>
+  <span class="cf">delay</span>(STREAM_DELAY);        <span class="cm">// 30 ms between frames</span>
+}</pre></div>
+    <div class="alert alert-info">
+      <strong>💡 Logbook task — Page 3</strong>
+      Draw a diagram showing both servers (port 80 and port 81) and what each handles. Why does separating them onto different ports solve the responsiveness problem? What would happen to motor commands if both ran on port 80?
+    </div>
+  </div>
+
+  <!-- STUDENT CHANGES -->
+  <div id="t-change" class="tab-panel">
+    <h3 style="margin-bottom:12px;color:var(--blue)">The Student Change Zone — What You Need to Modify</h3>
+    <div class="alert alert-green">
+      <strong>✅ Only 3 things to change — everything else is off-limits</strong>
+    </div>
+    <div class="code-block"><pre><span class="cm">// ╔═══════════════════════════════════════════════════════════╗</span>
+<span class="cm">// ║         STUDENTS — ONLY CHANGE THE LINES IN THIS BOX     ║</span>
+<span class="cm">// ╚═══════════════════════════════════════════════════════════╝</span>
+
+<span class="cm">// Change 1: Your group's car name and hotspot name</span>
+<span class="ck">#define</span> CAR_NAME  <span class="cs">"SpyCar_01"</span>    <span class="cm">// ← Your group number here</span>
+
+<span class="cm">// Change 2: Your hotspot password (must be 8+ characters)</span>
+<span class="ck">const char</span>* AP_PASS = <span class="cs">"spycar01"</span>; <span class="cm">// ← Match your group number</span>
+
+<span class="cm">// Change 3 (optional): Camera resolution</span>
+<span class="cm">// Remove // from ONE line only:</span>
+<span class="cm">// #define STREAM_SIZE  FRAMESIZE_QQVGA   // 160×120 — fastest</span>
+   <span class="ck">#define</span> STREAM_SIZE  FRAMESIZE_QVGA    <span class="cm">// 320×240 — default ← keep this</span>
+<span class="cm">// #define STREAM_SIZE  FRAMESIZE_VGA    // 640×480 — needs PSRAM</span></pre></div>
+    <table class="ip-table" style="margin-top:16px">
+      <thead><tr><th>Group</th><th>CAR_NAME</th><th>AP_PASS</th><th>Browser address</th></tr></thead>
+      <tbody id="carTable"></tbody>
+    </table>
+    <script>
+    const ct=document.getElementById('carTable');
+    for(let i=1;i<=20;i++){
+      const n=String(i).padStart(2,'0');
+      ct.innerHTML+=`<tr>
+        <td style="font-weight:600;color:var(--blue)">Group ${n}</td>
+        <td><code style="background:var(--gray-l);padding:2px 6px;border-radius:3px;font-family:monospace">SpyCar_${n}</code></td>
+        <td><code style="background:var(--gray-l);padding:2px 6px;border-radius:3px;font-family:monospace">spycar${n}</code></td>
+        <td><code style="background:var(--gray-l);padding:2px 6px;border-radius:3px;font-family:monospace">http://192.168.4.1</code></td>
+      </tr>`;
+    }
+    
+function printSignoff(){
+  // Scroll cover section into view then print
+  const el = document.getElementById('cover');
+  if(el) el.scrollIntoView({block:'start'});
+  setTimeout(()=>window.print(), 200);
+}
+function clearSignoff(){
+  ['sf-name','sf-date','sf-period','sf-room','sf-absent','sf-seating','sf-incidents','sf-sig','act-theory-num'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.value='';
+  });
+  ['act-theory','act-chassis','act-electronics','ch-tissue','ch-card','ch-laser','ch-na','eq-yes'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.checked=false;
+  });
+  const s=document.getElementById('sf-status');
+  s.style.display='inline';
+  setTimeout(()=>s.style.display='none',2000);
+}
+</script>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ WIFI + IP PLAN ═══ -->
+<div id="wifi" class="section-bg">
+  <div class="section-bg-inner">
+    <div class="section-tag">Network Plan</div>
+    <h2 class="section-title">20 Cars Simultaneously — How It Works</h2>
+    <p class="section-sub">In Access Point (hotspot) mode, each car creates its own isolated WiFi network. There are no IP address conflicts even with 20 cars in the same room.</p>
+
+    <div class="alert alert-green">
+      <strong>✅ The clever part: each car IS its own router</strong>
+      In AP mode every ESP32-CAM assigns itself the address 192.168.4.1 and runs its own private network (e.g. SpyCar_01). These networks don't interfere because they are isolated — each student's phone or laptop connects to only one of them. It's like 20 separate rooms, each with the same house number, on completely different streets.
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:24px">
+      <div>
+        <h4 style="color:var(--blue);margin-bottom:12px">Option A — Standalone Hotspot (Default)</h4>
+        <div class="rule-card ok" style="margin-bottom:12px">
+          <h4>✅ Recommended for class use</h4>
+          <p>No school network or router needed. Works anywhere. Students connect phone/laptop to their car's WiFi hotspot. URL is always <code>192.168.4.1</code>. 20 cars = 20 separate networks — zero interference.</p>
+        </div>
+        <div class="alert alert-info" style="margin-top:0">
+          <strong>⚠️ Internet access is off while connected to car hotspot</strong>
+          This is normal and expected. Students switch back to school WiFi when they need the internet (e.g. for OneNote). Remind them to switch back at the end of the lesson.
+        </div>
+      </div>
+      <div>
+        <h4 style="color:var(--teal);margin-bottom:12px">Option B — School Network (Backup)</h4>
+        <div class="rule-card" style="border-left:4px solid var(--teal);margin-bottom:12px">
+          <h4 style="color:var(--teal)">⚙️ When to use this</h4>
+          <p>Use if the standalone hotspot causes connectivity issues. The car joins the school WiFi. IP address is dynamic — read it from Serial Monitor. All devices must be on the same network. To activate: uncomment <code>#define WIFI_MODE_STA</code> in the sketch.</p>
+        </div>
+        <div class="alert alert-orange" style="margin-top:0">
+          <strong>Note for IT administrator</strong>
+          If using Station mode, the school DHCP server assigns IPs. For stability, assign fixed/reserved IPs based on each ESP32-CAM's MAC address. MAC address is printed in Serial Monitor on first boot.
+        </div>
+      </div>
+    </div>
+
+    <h3 style="margin:28px 0 14px;font-size:1.1rem">Class Setup — 20 Cars (AP Mode)</h3>
+    <p style="font-size:.85rem;color:var(--gray);margin-bottom:14px">The teacher pre-programs each car before the lesson. Students do not change the car name — they simply connect to the hotspot assigned to their group.</p>
+    <div style="overflow-x:auto">
+    <table class="ip-table">
+      <thead><tr><th>Car</th><th>Sketch #define CAR_NAME</th><th>Hotspot SSID</th><th>Password</th><th>URL in browser</th><th>Group</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>SpyCar_01</code></td><td>SpyCar_01</td><td>spycar01</td><td>192.168.4.1</td><td>Group 01</td></tr>
+        <tr><td>2</td><td><code>SpyCar_02</code></td><td>SpyCar_02</td><td>spycar02</td><td>192.168.4.1</td><td>Group 02</td></tr>
+        <tr><td>3–8</td><td><code>SpyCar_03</code> … <code>_08</code></td><td>SpyCar_03…08</td><td>spycar03…08</td><td>192.168.4.1</td><td>Groups 03–08</td></tr>
+        <tr><td>9</td><td><code>SpyCar_09</code></td><td>SpyCar_09</td><td>spycar09</td><td>192.168.4.1</td><td>Group 09</td></tr>
+        <tr><td>10</td><td><code>SpyCar_10</code></td><td>SpyCar_10</td><td>spycar10</td><td>192.168.4.1</td><td>Group 10</td></tr>
+        <tr><td>11–20</td><td><code>SpyCar_11</code> … <code>_20</code></td><td>SpyCar_11…20</td><td>spycar11…20</td><td>192.168.4.1</td><td>Groups 11–20</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="alert alert-info" style="margin-top:16px">
+      <strong>💡 Why does every car have the same IP (192.168.4.1)?</strong>
+      In AP mode the ESP32-CAM is the router — it assigns 192.168.4.1 to itself, just like your home router is typically 192.168.1.1. Each car's 192.168.4.1 lives on a different WiFi network (SpyCar_01, SpyCar_02…), so there is no ambiguity. Your phone is connected to exactly one hotspot, so the browser knows which car to talk to.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ VIDEO RULES ═══════ -->
+<div id="video" class="section">
+  <div class="section-tag">Assessment — Video Guidelines</div>
+  <h2 class="section-title">Recording Your Three-Minute Demo Video</h2>
+  <p class="section-sub">Your video is an assessment submission. Follow every rule below — some are legal requirements, others are school policy. Read all rules before you press record.</p>
+
+  <div class="alert alert-warn">
+    <strong>⚠️ Privacy and Legal Obligations — Australian Context</strong>
+    Student images and facial footage are considered personal information under the <em>Privacy Act 1988 (Cth)</em> and Queensland Department of Education privacy policy. Collecting, using, or publishing images of other students without consent is not permitted. St Peters Lutheran College has its own student image policy — your parents or carers signed consent forms about school use of images. Publication on social media is NOT covered by that consent.
+  </div>
+
+  <div class="rule-grid" style="margin-top:20px">
+    <div class="rule-card warn">
+      <div class="rc-icon">🚫</div>
+      <h4>No Other Students' Faces</h4>
+      <p>Your video must NOT show any other student's face. If another person appears, retake the video or re-edit to crop them out before submitting. This applies even if they are in the background.</p>
+    </div>
+    <div class="rule-card warn">
+      <div class="rc-icon">🚫</div>
+      <h4>No Social Media Upload</h4>
+      <p>Do not upload your video to TikTok, Instagram, YouTube, Snapchat, or any other social media or public platform. Upload to Class OneNote only. Violation of this rule may result in disciplinary action under the school's ICT Acceptable Use Policy.</p>
+    </div>
+    <div class="rule-card warn">
+      <div class="rc-icon">🚫</div>
+      <h4>No Publishing Without Consent</h4>
+      <p>Even if you own the footage, you must not publish images or footage of other people (students, teachers, staff) without their explicit written consent. This is both school policy and a legal requirement in Australia.</p>
+    </div>
+    <div class="rule-card ok">
+      <div class="rc-icon">✅</div>
+      <h4>What You CAN Show</h4>
+      <p>Your car, your hands, your workspace, the browser control page on screen, the Serial Monitor. You can include your own voice narration. You may show your partner's hands only (not face) if they consent verbally on camera.</p>
+    </div>
+    <div class="rule-card ok">
+      <div class="rc-icon">✅</div>
+      <h4>Where to Submit</h4>
+      <p>Upload your MP4 file to your Class OneNote page — Assessment 2 section. Maximum 3 minutes. No minimum length. If file is too large, compress it first using a free tool (ask your teacher).</p>
+    </div>
+    <div class="rule-card ok">
+      <div class="rc-icon">✅</div>
+      <h4>What to Include in Your Video</h4>
+      <p>Show all five commands (F/B/L/R/Stop) with the live stream visible on screen. Narrate what the car does and explain at least one design decision you made or problem you solved.</p>
+    </div>
+  </div>
+
+  <div style="margin-top:28px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px">
+    <h3 style="margin-bottom:16px;font-size:1.1rem;color:var(--blue)">Video Storyboard — Three Minutes, Four Segments</h3>
+    <table class="ip-table">
+      <thead><tr><th>Segment</th><th>Time</th><th>What to Film</th><th>What to Say</th><th>What NOT to do</th></tr></thead>
+      <tbody>
+        <tr><td style="font-weight:700;color:var(--blue)">1 — Intro</td><td>0:00–0:30</td><td>Your car on a flat surface. Hold it up. Show front and back. Your hands only.</td><td>"Hi, this is my Spy Car called SpyCar_[XX]. I am going to demonstrate its functions."</td><td>Don't show your face or anyone else's face.</td></tr>
+        <tr><td style="font-weight:700;color:var(--blue)">2 — Drive Demo</td><td>0:30–1:30</td><td>Car driving on classroom floor. Film from the side at floor level.</td><td>Narrate each command as you press it: "Pressing W — going forward… pressing A — turning left…"</td><td>Don't film while standing on a chair or desk. Floor tests only.</td></tr>
+        <tr><td style="font-weight:700;color:var(--blue)">3 — Live Stream</td><td>1:30–2:30</td><td>Show your phone/laptop screen with the camera stream visible while driving.</td><td>"You can see the live video stream from the car's camera as it drives."</td><td>Don't include any personal information on screen (names, passwords, OneNote notifications).</td></tr>
+        <tr><td style="font-weight:700;color:var(--blue)">4 — Explain</td><td>2:30–3:00</td><td>Close-up of wiring OR Serial Monitor OR code.</td><td>"One important thing I learned was… The hardest problem I solved was… because…"</td><td>Don't read directly from the logbook — explain it in your own words.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ CHASSIS OPTIONS ═══ -->
+<div id="chassis" class="section-bg">
+  <div class="section-bg-inner">
+    <div class="section-tag">Design + Engineering</div>
+    <h2 class="section-title">Chassis Options and Digital Design</h2>
+    <p class="section-sub">Three chassis options available. The cardboard custom option may be completed once the regular teacher returns. Tissue box is the recommended classroom fallback.</p>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;margin-bottom:32px">
+      <div style="background:var(--surface);border:2px solid var(--green);border-radius:12px;padding:20px">
+        <div style="font-size:1.8rem;margin-bottom:8px">📦</div>
+        <h4 style="color:var(--green);margin-bottom:8px">Option A — Tissue Box <span style="font-size:.7rem;background:var(--green-l);color:var(--green);padding:2px 8px;border-radius:8px;margin-left:6px">RECOMMENDED NOW</span></h4>
+        <p style="font-size:.84rem;color:var(--gray);margin-bottom:12px">Any rectangular tissue box works. No cutting tools required. Tape inside. Simple, quick, and sturdy enough for testing all car functions.</p>
+        <div class="chassis-steps">
+          <div class="chassis-step"><p>Insert motors through holes punched in side walls (pen tip or hole punch — follow teacher instructions - no risktaking!).</p></div>
+          <div class="chassis-step"><p>Press wheels onto motor shafts until they click. Mount omni wheel at front, use scissors to cut out an opening - no boxcuters allowed! use simple axle (i.e.: dowel, plastic straw, scewer) hold in place with tape.</p></div>
+          <div class="chassis-step"><p>Place motorcontroller inside ( hold in place with double-sided tape if accessible) . Thread wires through a cut in the flap.</p></div>
+          <div class="chassis-step"><p>Tape ESP32-CAM at the front pointing forward for FPV view. Cut a small viewing hole in the front face.</p></div>
+          <div class="chassis-step"><p>Place battery pack inside to secure any loose wires and close the box.</p></div>
+          <div class="chassis-step"><p>Use tape to secure any loose wires and close the box. Test drive and adjust motor/wheel positions as needed.</p></div>
+        </div>
+
+      </div>
+      <div style="background:var(--surface);border:2px solid var(--orange);border-radius:12px;padding:20px">
+        <div style="font-size:1.8rem;margin-bottom:8px">✂️</div>
+        <h4 style="color:var(--orange);margin-bottom:8px">Option B — Custom Cardboard <span style="font-size:.7rem;background:var(--orange-l);color:var(--orange);padding:2px 8px;border-radius:8px;margin-left:6px">WITH TEACHER PRESENT</span></h4>
+        <p style="font-size:.84rem;color:var(--gray);margin-bottom:12px">Pre-designed card template cut to size. Better motor mounting and cable management. Requires scissors or craft knife — cover teacher supervision only for scissors; expert teacher or TA for craft knife.</p>
+        <div class="alert alert-warn" style="margin-top:8px;padding:12px">
+          <strong>⚠️ Cover teacher note</strong>
+          If the cardboard template chassis has not been pre-cut by the regular teacher, use Option A (tissue box) only. Do not ask students to cut cardboard unsupervised.
+        </div>
+      </div>
+      <div style="background:var(--surface);border:2px solid var(--purple);border-radius:12px;padding:20px">
+        <div style="font-size:1.8rem;margin-bottom:8px">🔴</div>
+        <h4 style="color:var(--purple);margin-bottom:8px">Option C — Laser Cut Acrylic <span style="font-size:.7rem;background:var(--purple-l);color:var(--purple);padding:2px 8px;border-radius:8px;margin-left:6px">EXPERT TEACHER + TA ONLY</span></h4>
+        <p style="font-size:.84rem;color:var(--gray)">Professional-looking acrylic chassis. Requires the laser cutter. <strong>This option is only available when the regular Technology teacher (Ms Baessler) is present and a TA is available to operate the laser cutter.</strong> A cover teacher supervising a class lesson cannot operate the laser cutter simultaneously.</p>
+        <div class="alert alert-warn" style="margin-top:8px;padding:12px">
+          <strong>⛔ LASER CUTTER — STRICT CONDITIONS</strong>
+          Must be operated by a trained TA or specialist teacher only. The classroom teacher and machine operator cannot be the same person during a class lesson (active supervision must continue). Students must not be near the machine during operation. All St Peters laser cutter SOP rules apply.
+        </div>
+      </div>
+    </div>
+
+    <div class="alert alert-teal" style="margin-bottom:28px">
+      <strong>🎓 TinkerCad Digital Design Activity — Design Your Vehicle in 3D</strong>
+      Before or alongside building the physical chassis, design a digital model of your RC car in TinkerCad. This counts as evidence of the Design stage in your engineering logbook (Page 1 — Block Diagram and System Design). Include motor mounts, camera mount, and cable channels in your design.
+    </div>
+
+    <a class="big-link" href="https://www.tinkercad.com/classrooms" target="_blank" rel="noopener">
+      <h4>🔗 TinkerCad Classroom — Join Your Class Activity</h4>
+      <p>Your teacher will share the class join code. Open TinkerCad, sign in with your school email, and join the class to access the shared RC car design activity. Complete the 3D model of your chassis before building the physical version.</p>
+      <span class="link-badge" style="background:var(--teal-l);color:var(--teal)">tinkercad.com/classrooms</span>
+    </a>
+    <a class="big-link" href="https://www.tinkercad.com/things/new" target="_blank" rel="noopener">
+      <h4>🔗 Start a New TinkerCad Design</h4>
+      <p>If your teacher has not set up a class activity yet, start your own design. Create a free account with your school email. Begin with a rectangular base (chassis), add cylindrical shafts (motor mounts), and position the camera module at the front.</p>
+      <span class="link-badge" style="background:var(--blue-l);color:var(--blue)">tinkercad.com/things/new</span>
+    </a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ COVER TEACHER ═════ -->
+<div id="cover" class="section">
+  <div class="section-tag">For Printing — Cover Teacher Reference</div>
+  <h2 class="section-title">Cover Teacher Practical Lesson Guide</h2>
+  <p class="section-sub">Print this page and leave it with the cover teacher. This is the practical lesson equivalent of the theory cover plan. Active supervision is required at all times.</p>
+
+  <div class="alert alert-warn" style="margin-bottom:24px">
+    <strong>⚠️ ACTIVE SUPERVISION IS MANDATORY FOR ALL PRACTICAL LESSONS</strong>
+    St Peters Lutheran College policy requires active supervision during practical activities involving tools, electrical components, or machinery. A cover teacher conducting a practical lesson is responsible for student safety at all times. If you are not confident supervising the specific activity planned, revert to a theory-only lesson (use the Theory Lesson worksheets instead).
+  </div>
+
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="showTab('cv-general',this)">General Rules</button>
+    <button class="tab-btn" onclick="showTab('cv-laser',this)">Laser Cutter Policy</button>
+    <button class="tab-btn" onclick="showTab('cv-chassis',this)">Chassis Activities</button>
+    <button class="tab-btn" onclick="showTab('cv-electronics',this)">Electronics Work</button>
+    <button class="tab-btn" onclick="showTab('cv-emergency',this)">Emergency Procedures</button>
+  </div>
+
+  <div id="cv-general" class="tab-panel active">
+    <h4 style="margin-bottom:14px;color:var(--blue)">General Practical Lesson Safety — Non-Negotiable Rules</h4>
+    <div class="rule-grid">
+      <div class="rule-card warn">
+        <div class="rc-icon">👁️</div>
+        <h4>Active Supervision at All Times</h4>
+        <p>You must be physically present and observant in the room for the entire lesson. You cannot sit at the teacher's desk and mark rolls while students use tools or electrical components. Circulate every 3–5 minutes. Maintain line-of-sight with all students.</p>
+      </div>
+      <div class="rule-card warn">
+        <div class="rc-icon">🦺</div>
+        <h4>PPE and Safety Equipment</h4>
+        <p>Enclosed footwear is mandatory (school uniform policy). Safety glasses are available in the labelled cabinet — issue them before any cutting activity. Students must remove dangling jewellery and tie back long hair before using any tools or powering on electrical components.</p>
+      </div>
+      <div class="rule-card warn">
+        <div class="rc-icon">🔋</div>
+        <h4>Power-On Approval Required</h4>
+        <p>No student may connect battery power to their car without teacher inspection. Walk to each group, visually inspect the wiring against the provided wiring diagram, and verbally approve before they turn on the Pololu-1771 switch. Initial their safety checklist in the logbook.</p>
+      </div>
+      <div class="rule-card warn">
+        <div class="rc-icon">🚗</div>
+        <h4>Driving Tests — Floor Only</h4>
+        <p>All car driving tests must be conducted on the classroom floor in the designated test zone. Cars must not be driven on desks, benches, or chairs. Clear the test zone of bags, chairs, and cables before any driving test. Students must stand back when the car is moving.</p>
+      </div>
+      <div class="rule-card ok">
+        <div class="rc-icon">📋</div>
+        <h4>Seating and Roll</h4>
+        <p>Direct students to their allocated seats (seating chart on board). Year 9 students must not sit adjacent. Mark roll in eSIS within first 10 minutes. Record any student not in their allocated seat.</p>
+      </div>
+      <div class="rule-card ok">
+        <div class="rc-icon">📦</div>
+        <h4>Equipment Storage</h4>
+        <p>All electronic components (ESP32-CAM boards, L298N modules, batteries) must be returned to their labelled storage boxes at the end of each lesson. Count components before and after. Report any missing items to the HoD before leaving.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="cv-laser" class="tab-panel">
+    <h4 style="margin-bottom:14px;color:var(--red)">Laser Cutter — Strict Operational Policy</h4>
+    <div class="alert alert-warn">
+      <strong>⛔ CRITICAL — READ BEFORE ANY LASER CUTTER ACTIVITY</strong>
+    </div>
+    <div class="rule-grid" style="margin-top:16px">
+      <div class="rule-card warn">
+        <div class="rc-icon">⛔</div>
+        <h4>Cover Teacher Cannot Operate Laser Cutter</h4>
+        <p>A cover teacher who is simultaneously supervising a class of students cannot operate the laser cutter. These are two separate responsible roles that cannot be performed by one person at the same time. If the laser cutter is needed, postpone that activity until the regular teacher returns.</p>
+      </div>
+      <div class="rule-card warn">
+        <div class="rc-icon">⛔</div>
+        <h4>Must Be Trained and Authorised</h4>
+        <p>The laser cutter may only be operated by: (1) Ms Baessler, (2) a trained and authorised TA, or (3) another trained specialist teacher. Authorisation must be confirmed with the HoD before operation. If you have not completed St Peters laser cutter induction — do not operate it.</p>
+      </div>
+      <div class="rule-card warn">
+        <div class="rc-icon">⚠️</div>
+        <h4>Student Exclusion Zone</h4>
+        <p>Students must be at least 1.5 m from the laser cutter while it is operating. No student is permitted to load, adjust, or operate any aspect of the laser cutter at any time. The operator must be in full control of the machine at all times.</p>
+      </div>
+      <div class="rule-card warn">
+        <div class="rc-icon">🧯</div>
+        <h4>Fire Safety</h4>
+        <p>CO₂ fire extinguisher must be accessible (check location before starting). Never leave the laser cutter unattended during a cut. If smoke increases suddenly or flames appear — press Emergency Stop immediately. Do not use water on a laser fire.</p>
+      </div>
+    </div>
+    <div class="alert alert-green" style="margin-top:16px">
+      <strong>✅ Action for cover teachers: use tissue box chassis instead</strong>
+      If the custom cardboard or acrylic chassis has not been pre-prepared by Ms Baessler, instruct students to use the tissue box chassis (Option A). This requires no cutting tools and is fully functional for all assessment criteria. Document which groups used the tissue box chassis in the cover teacher notes.
+    </div>
+  </div>
+
+  <div id="cv-chassis" class="tab-panel">
+    <h4 style="margin-bottom:14px;color:var(--blue)">Chassis Building Activities — What Cover Teachers Can Supervise</h4>
+    <table class="ip-table">
+      <thead><tr><th>Activity</th><th>Cover Teacher Can Supervise?</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Tissue box chassis assembly (no cutting)</td><td style="color:var(--green);font-weight:600">✅ YES</td><td>Supervise carefully. Students use only their hands and cable ties. No tools needed.</td></tr>
+        <tr><td>Motor shaft through pre-punched holes</td><td style="color:var(--green);font-weight:600">✅ YES</td><td>Holes must be pre-punched by Ms Baessler or TA. Cover teacher must not punch holes in front of class.</td></tr>
+        <tr><td>Pressing wheels onto shafts</td><td style="color:var(--green);font-weight:600">✅ YES</td><td>Low force required. Show students how to press straight to avoid bending shaft.</td></tr>
+        <tr><td>Cable ties and breadboard mounting</td><td style="color:var(--green);font-weight:600">✅ YES</td><td>Safe activity. Monitor for students cutting cable ties with scissors without supervision.</td></tr>
+        <tr><td>Scissors — cutting cardboard template</td><td style="color:var(--orange);font-weight:600">⚠️ CONDITIONAL</td><td>Cover teacher may supervise if pre-cut template lines are marked. One student at a time. Direct supervision required.</td></tr>
+        <tr><td>Craft knife — cutting cardboard</td><td style="color:var(--red);font-weight:600">⛔ NO</td><td>Craft knives require specialist teacher or TA supervision. Postpone if Ms Baessler is absent.</td></tr>
+        <tr><td>Hot glue gun</td><td style="color:var(--red);font-weight:600">⛔ NO</td><td>Burn risk. Expert teacher or TA required. Use double-sided tape or cable ties instead.</td></tr>
+        <tr><td>Laser cutter operation</td><td style="color:var(--red);font-weight:600">⛔ NO</td><td>See Laser Cutter Policy tab. Postpone until Ms Baessler returns.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="cv-electronics" class="tab-panel">
+    <h4 style="margin-bottom:14px;color:var(--blue)">Electronics Work — Cover Teacher Supervision Guide</h4>
+    <div class="alert alert-info" style="margin-bottom:16px">
+      <strong>Maximum voltage in this project: 9V DC from AA batteries.</strong>
+      This is below the threshold for serious electric shock. The main risks are: short circuits causing component damage, overheating, and reversed polarity. There is no mains electricity in this project.
+    </div>
+    <table class="ip-table">
+      <thead><tr><th>Task</th><th>Cover Teacher Can Supervise?</th><th>Key Safety Action</th></tr></thead>
+      <tbody>
+        <tr><td>Code upload via FTDI + Arduino IDE</td><td style="color:var(--green);font-weight:600">✅ YES</td><td>USB only. No battery connected during upload. Follow the 8-step upload procedure.</td></tr>
+        <tr><td>Breadboard wiring (no battery)</td><td style="color:var(--green);font-weight:600">✅ YES</td><td>Inspect against wiring diagram before approving battery connection.</td></tr>
+        <tr><td>L298N screw terminal connections</td><td style="color:var(--green);font-weight:600">✅ YES</td><td>Supervise screwdriver use. Ensure battery is OFF (Pololu-1771 switch) before wiring.</td></tr>
+        <tr><td>Battery connection (first power-on)</td><td style="color:var(--orange);font-weight:600">⚠️ INSPECT FIRST</td><td>Visually inspect ALL wiring against diagram. Check GPIO16 not used. Initial logbook checklist. THEN approve switch-on.</td></tr>
+        <tr><td>Driving tests after power-on</td><td style="color:var(--green);font-weight:600">✅ YES</td><td>Floor only. Designated test zone. Students stand back. No driving on desks.</td></tr>
+        <tr><td>Overheating component (hot L298N)</td><td style="color:var(--red);font-weight:600">⛔ STOP IMMEDIATELY</td><td>Direct student to turn off Pololu-1771 switch immediately. Do not reconnect. Report to HoD. Document incident.</td></tr>
+        <tr><td>Smoke or burning smell</td><td style="color:var(--red);font-weight:600">⛔ STOP IMMEDIATELY</td><td>All students: hands off, step back. Teacher turns off all batteries. Ventilate room. If smoke continues — evacuate and call 000.</td></tr>
+      </tbody>
+    </table>
+    <div class="alert alert-info" style="margin-top:16px">
+      <strong>Touch-test rule (remind students)</strong>
+      30 seconds after turning on the battery switch, gently touch the L298N chip and ESP32-CAM module with the back of your hand. If either feels hot (you cannot hold your hand there) — switch off immediately and report to the cover teacher. This is a sign of a short circuit or incorrect wiring.
+    </div>
+  </div>
+
+  <div id="cv-emergency" class="tab-panel">
+    <h4 style="margin-bottom:14px;color:var(--red)">Emergency Procedures</h4>
+    <table class="ip-table">
+      <thead><tr><th>Emergency</th><th>Immediate Action</th><th>Follow-Up</th></tr></thead>
+      <tbody>
+        <tr><td style="font-weight:600">Electrical incident (burn, shock)</td><td>Switch off Pololu-1771 immediately. Do not touch student if still in contact with live circuit. Apply first aid for burns. Call 000 if injury is significant.</td><td>Complete WHS incident report on Firefly. Notify HoD immediately. Do not restart equipment.</td></tr>
+        <tr><td style="font-weight:600">Fire / smoke from component</td><td>Direct students away. Switch off all batteries. Use CO₂ extinguisher for small electrical fire — NOT water. If not immediately controlled — evacuate room and activate school emergency.</td><td>Call 000. Contact principal. Complete incident report.</td></tr>
+        <tr><td style="font-weight:600">Student injury from tool (cut, burn)</td><td>Apply pressure to cuts. Apply cold water to burns. Assess severity. Administer first aid. Seek further medical attention if needed.</td><td>Contact parents/carers. Complete incident report. Remove tool from student.</td></tr>
+        <tr><td style="font-weight:600">Student medical emergency</td><td>Follow student's individual health plan (located on teacher's desk). Call 000 immediately for anaphylaxis, seizure, or loss of consciousness. Administer prescribed medication per school protocol.</td><td>Contact parents/carers. Send student to sick bay with an adult. Complete incident report.</td></tr>
+        <tr><td style="font-weight:600">Student behaviour — refuses direction</td><td>Verbal warning → formal reminder → seat removal → refer to HoD. Do not leave class unattended to escort student. Contact HoD/Admin by phone or send a trusted student with a written note.</td><td>Document incident. Leave written record for Ms Baessler.</td></tr>
+      </tbody>
+    </table>
+    <div class="alert alert-info" style="margin-top:16px">
+      <strong>First aid kit and emergency contacts</strong>
+      First aid kit: labelled cabinet near door. Emergency number: school front office. HoD Technology: check staffroom noticeboard. Queensland Poison Information Centre: 13 11 26.
+    </div>
+  </div>
+
+  <div style="margin-top:32px;background:var(--gray-l);border-radius:10px;padding:20px">
+    <h4 style="margin-bottom:4px;color:var(--blue)">Cover Teacher Sign-Off</h4>
+    <p style="font-size:.84rem;color:var(--gray);margin-bottom:16px">Complete all fields, then click <strong>Print / Save PDF</strong> and leave a copy on Ms Baessler's desk with the class roll.</p>
+
+    <div class="signoff-form" id="signoffForm">
+
+      <div class="sf-row">
+        <span class="sf-label">Cover teacher name</span>
+        <input type="text" id="sf-name" placeholder="Full name">
+      </div>
+
+      <div class="sf-row">
+        <span class="sf-label">Date</span>
+        <input type="text" id="sf-date" placeholder="e.g. 4 June 2026">
+      </div>
+
+      <div class="sf-row">
+        <span class="sf-label">Period / time</span>
+        <input type="text" id="sf-period" placeholder="e.g. Period 3 — 10:45 am">
+      </div>
+
+      <div class="sf-row">
+        <span class="sf-label">Room number</span>
+        <input type="text" id="sf-room" placeholder="e.g. T14">
+      </div>
+
+      <hr class="sf-divider">
+
+      <div class="sf-row">
+        <span class="sf-label">Activity completed</span>
+        <div class="sf-checks">
+          <label class="sf-check"><input type="checkbox" id="act-theory"> Theory lesson</label>
+          <input type="text" id="act-theory-num" placeholder="Lesson number (1–8)" style="width:180px;padding:5px 10px;border:1px solid var(--border);border-radius:5px;font-size:.82rem">
+          <label class="sf-check"><input type="checkbox" id="act-chassis"> Practical — chassis</label>
+          <label class="sf-check"><input type="checkbox" id="act-electronics"> Practical — electronics</label>
+        </div>
+      </div>
+
+      <div class="sf-row">
+        <span class="sf-label">Chassis option used</span>
+        <div class="sf-checks">
+          <label class="sf-check"><input type="checkbox" id="ch-tissue"> Tissue box</label>
+          <label class="sf-check"><input type="checkbox" id="ch-card"> Cardboard template</label>
+          <label class="sf-check"><input type="checkbox" id="ch-laser"> Laser cut (TA present)</label>
+          <label class="sf-check"><input type="checkbox" id="ch-na"> N/A — theory lesson</label>
+        </div>
+      </div>
+
+      <hr class="sf-divider">
+
+      <div class="sf-row">
+        <span class="sf-label">Students absent</span>
+        <input type="text" id="sf-absent" placeholder="Full names, or 'None'">
+      </div>
+
+      <div class="sf-row">
+        <span class="sf-label">Seating changes<br><small style="font-weight:400;color:var(--gray)">(name + reason)</small></span>
+        <input type="text" id="sf-seating" placeholder="e.g. Jovan moved to Row 4 — behavioural, or 'None'">
+      </div>
+
+      <div class="sf-row" style="align-items:start">
+        <span class="sf-label">Incidents / issues</span>
+        <textarea id="sf-incidents" placeholder="Describe any safety incidents, behaviour referrals, equipment damage, or other issues. Write 'None' if no incidents occurred."></textarea>
+      </div>
+
+      <div class="sf-row">
+        <span class="sf-label">Equipment returned</span>
+        <div class="sf-checks">
+          <label class="sf-check"><input type="checkbox" id="eq-yes"> All components returned to labelled storage boxes ✓</label>
+        </div>
+      </div>
+
+      <hr class="sf-divider">
+
+      <div class="alert alert-info" style="margin-bottom:16px">
+        <strong>Declaration</strong>
+        I confirm that I supervised this lesson in accordance with St Peters Lutheran College safety requirements, that active supervision was maintained at all times, and that the information above is accurate.
+      </div>
+
+      <div class="sf-row">
+        <span class="sf-label">Signature</span>
+        <input type="text" id="sf-sig" placeholder="Type your full name as signature">
+      </div>
+
+      <div class="sf-actions">
+        <button class="sf-btn-print" onclick="printSignoff()">🖨️ Print / Save PDF</button>
+        <button class="sf-btn-clear" onclick="clearSignoff()">Clear form</button>
+        <span class="sf-status" id="sf-status">✓ Cleared</span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer>
+  <strong>89 MECA — FPV Spy Car | v10 Resources | St Peters Lutheran College Springfield</strong><br>
+  Code v10 — Motor bug fixed | AP mode hotspot | 20-car class plan | Term 2, 2026<br>
+  Ms Gudrun Baessler · Cover teacher sign-off form included · Print using 🖨️ button in Cover Teacher section
+</footer>
+
+<script>
+function showTab(id, btn){
+  const parent = btn.closest('.section,.section-bg,div[id]') || document.body;
+  parent.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  parent.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  const panel = document.getElementById(id);
+  if(panel){panel.classList.add('active');btn.classList.add('active');}
+}
+function goto(id){
+  document.querySelectorAll('.nav-pill').forEach(p=>p.classList.remove('active'));
+  event.target.classList.add('active');
+  const el = document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function printSignoff(){
+  // Scroll cover section into view then print
+  const el = document.getElementById('cover');
+  if(el) el.scrollIntoView({block:'start'});
+  setTimeout(()=>window.print(), 200);
+}
+function clearSignoff(){
+  ['sf-name','sf-date','sf-period','sf-room','sf-absent','sf-seating','sf-incidents','sf-sig','act-theory-num'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.value='';
+  });
+  ['act-theory','act-chassis','act-electronics','ch-tissue','ch-card','ch-laser','ch-na','eq-yes'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.checked=false;
+  });
+  const s=document.getElementById('sf-status');
+  s.style.display='inline';
+  setTimeout(()=>s.style.display='none',2000);
+}
+</script>
+</body>
+</html>
