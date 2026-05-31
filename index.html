@@ -466,14 +466,28 @@
     Unzip &rarr; rename folder to RCCar_ESP32CAM_v10_student &rarr; open the .ino file in Arduino IDE
   </p>
 </div>
+      <div style="margin:16px 0 20px;padding:16px;background:#1a3a1a;border:1px solid #2d5a2d;border-radius:8px;text-align:center">
+  <p style="color:#4CAF50;font-size:0.8rem;margin:0 0 10px;font-weight:600;letter-spacing:1px">
+    📥 DOWNLOAD SKETCH
+  </p>
+  <a href="https://github.com/st-peters-lutheran-college-springfield/downloads-89MEC/archive/refs/heads/main.zip"
+     style="display:inline-block;background:#e63946;color:#fff;text-decoration:none;
+            padding:10px 24px;border-radius:6px;font-size:0.9rem;font-weight:600">
+    ⬇️ Download RCCar_ESP32CAM_v10_student.zip
+  </a>
+  <p style="color:#888;font-size:0.65rem;margin:8px 0 0">
+    Unzip &rarr; rename folder to RCCar_ESP32CAM_v10_student &rarr; open the .ino file in Arduino IDE
+  </p>
+</div>
       <p>Only change the student block at the top of the sketch. Everything below is fixed.</p>
     </div>
     <div class="card card-amber">
       <div class="card-header"><span class="icon">✏️</span><h3>Lines to Customise</h3><span class="tag tag-amber">Change these only</span></div>
-      <pre style="background:#1E2A3A;color:#E2E8F0;padding:14px;border-radius:7px;font-family:var(--mono);font-size:13px;overflow-x:auto;line-height:1.6">#define CAR_NAME  "YourName"
-const char* WIFI_SSID = "NetworkName";
-const char* WIFI_PASS = "Password";
-#define STREAM_SIZE  FRAMESIZE_QVGA  // use in class</pre>
+      <pre style="background:#1E2A3A;color:#E2E8F0;padding:14px;border-radius:7px;font-family:var(--mono);font-size:13px;overflow-x:auto;line-height:1.6">
+        #define CAR_NAME  "YourName"
+#define CAR_NAME  "SpyCar_01"
+#define CAR_PASS  "spycar01"
+#define STREAM_SIZE  FRAMESIZE_QVGA // use in class</pre>
     </div>
     <div class="alert alert-red"><span class="alert-icon">⚠️</span><div><strong>NEVER submit code with a real password.</strong> Replace it with: <span class="code-pill">const char* WIFI_PASS = "REMOVED";</span></div></div>
     <div class="section-h">Arduino IDE Settings</div>
