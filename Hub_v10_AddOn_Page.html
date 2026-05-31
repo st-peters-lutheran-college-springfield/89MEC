@@ -28,6 +28,33 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-
 .nav-pills{display:flex;gap:2px;flex-wrap:wrap}
 .nav-pill{padding:6px 14px;border-radius:6px;font-size:.78rem;font-weight:500;color:rgba(255,255,255,.7);cursor:pointer;border:none;background:none;transition:all .2s}
 .nav-pill:hover,.nav-pill.active{background:rgba(255,255,255,.15);color:#fff}
+  .back-link-wrap{
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:12px 32px;
+}
+.back-link-inner{
+  max-width:1100px;
+  margin:0 auto;
+}
+.back-link{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  color:var(--blue);
+  text-decoration:none;
+  font-size:.85rem;
+  font-weight:600;
+  padding:8px 14px;
+  border:1px solid var(--border);
+  border-radius:8px;
+  background:#fff;
+  transition:all .2s;
+}
+.back-link:hover{
+  background:var(--blue-l);
+  border-color:#b6ccdf;
+}
 .hero{background:linear-gradient(135deg,var(--blue) 0%,#1e4080 100%);color:#fff;padding:52px 32px 40px;text-align:center}
 .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:5px 16px;font-size:.72rem;letter-spacing:2px;margin-bottom:16px}
 .hero h1{font-size:2.4rem;font-weight:700;margin-bottom:8px}
@@ -150,6 +177,7 @@ footer strong{color:#fff}
     <button class="nav-pill" onclick="goto('cover')">Cover Teacher</button>
   </nav>
 </div>
+
 
 <section class="hero">
   <div class="hero-badge">🔧 v10 UPDATE — MOTOR BUG FIXED</div>
