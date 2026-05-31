@@ -27,6 +27,31 @@
   .nav-item:hover{background:rgba(255,255,255,.07);color:#fff;}
   .nav-item.active{background:rgba(33,150,243,.18);border-left-color:var(--sky);color:#fff;}
   .nav-item .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+  .nav-link-btn{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  margin:6px 16px 0 16px;
+  padding:9px 12px;
+  background:#FFFFFF;
+  color:var(--navy);
+  text-decoration:none;
+  font-size:13px;
+  font-weight:700;
+  border-radius:8px;
+  border:1px solid var(--border);
+  transition:all .15s;
+}
+.nav-link-btn:hover{
+  background:#F8FAFC;
+  border-color:#BBDEFB;
+}
+.nav-link-btn .dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  flex-shrink:0;
+}
   .nav-item .badge{margin-left:auto;background:var(--sky);color:#fff;font-size:10px;font-family:var(--mono);padding:1px 6px;border-radius:9px;}
   .save-indicator{padding:10px 16px;font-size:11px;font-family:var(--mono);color:rgba(255,255,255,.4);border-top:1px solid rgba(255,255,255,.08);margin-top:auto;}
   .save-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#4CAF50;margin-right:6px;}
@@ -273,11 +298,12 @@
   </div>
 
   <div style="padding:8px 0;">
-    <div class="section-label">🔧 Reference</div>
-    <div class="nav-item" onclick="show('components')" id="nav-components"><span class="dot" style="background:#F59E0B"></span>Component Guide</div>
-    <div class="nav-item" onclick="show('wiring')" id="nav-wiring"><span class="dot" style="background:#C62828"></span>Wiring Reference</div>
-    <div class="nav-item" onclick="show('code')" id="nav-code"><span class="dot" style="background:#7B1FA2"></span>Code Reference</div>
-  </div>
+  <div class="section-label">🔧 Reference</div>
+  <div class="nav-item" onclick="show('components')" id="nav-components"><span class="dot" style="background:#F59E0B"></span>Component Guide</div>
+  <div class="nav-item" onclick="show('wiring')" id="nav-wiring"><span class="dot" style="background:#C62828"></span>Wiring Reference</div>
+  <div class="nav-item" onclick="show('code')" id="nav-code"><span class="dot" style="background:#7B1FA2"></span>Code Reference</div>
+  <a class="nav-link-btn" href="https://github.com/st-peters-lutheran-college-springfield/89MEC/blob/main/Hub_v10_AddOn_Page.html" target="_blank" id="nav-cover-lesson-guide"><span class="dot" style="background:#FFFFFF;border:1px solid #CBD5E1;"></span>Cover Lesson Guide</a>
+</div>
 
   <div style="padding:8px 0;">
     <div class="section-label">✏️ My Work</div>
